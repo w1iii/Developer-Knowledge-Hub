@@ -11,9 +11,6 @@ export default function Home(){
   
   const handleSubmit = async(e:React.FormEvent<HTMLFormElement>) =>{
     e.preventDefault()
-    console.log("Username: ", username)
-    console.log("Email: ", email)
-    console.log("Password: ", password)
 
     try{
       const response = await fetch('/api/authControllers/signup', {
@@ -23,20 +20,26 @@ export default function Home(){
         },
         body: JSON.stringify({ username, email, password }),
       })
-      if(response.ok){
-        setMessage("Account successfully ")
-        setUsername("")
-        setEmail("")
-        setPassword("")
+      const data = await response.json()
+
+      if(!response.ok){
+        setError(data.error)
+        return
       }
+
+      setMessage("Account successfully ")
+      setUsername("")
+      setEmail("")
+      setPassword("")
     }catch(err:any){
-      setError(message)
+      setError(err)
     }
   }
   
   return(
     <div className="login-container">
-      <h1> Login </h1> 
+      <h1> Signup </h1> 
+      { message && <p> {message} </p>}
       <form onSubmit={handleSubmit}>
         <input type="text" value={username} onChange={(e)=>setUsername(e.target.value)} className="form-input-login"  placeholder="username" /> 
         <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} className="form-input-login"  placeholder="email" /> 

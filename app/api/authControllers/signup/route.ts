@@ -14,6 +14,18 @@ export async function POST(req: NextRequest){
     }
     
     try{
+        const checkDupUsername = `
+            SELECT username FROM users WHERE username = $1 
+        `;
+        const existingUsername = await pool.query(checkDupUsername, [username]);
+        
+        if (existingUsername.rows.length > 0) {
+            return NextResponse.json(
+                { error: "Username already used" }, 
+                { status: 409 }
+            );
+        }
+
         const checkDupQuery = `
             SELECT user_id FROM users WHERE email = $1 
         `;

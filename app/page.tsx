@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 export default function Home(){
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
 
   const router = useRouter()
   
@@ -22,10 +23,14 @@ export default function Home(){
         },
         body: JSON.stringify({ email, password }),
       })
+
+      const data = await response.json()
       
       if(!response.ok){
-        throw new Error("Login Failed")
+        setError(data.error)
+        return
       }
+      setError("")
       router.push('/dashboard')
     }catch(e){
       console.log(e)
@@ -40,8 +45,8 @@ export default function Home(){
         <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} className="form-input-login" placeholder="password" />
         <button> Submit </button>
       </form>
+      { error && <p> {error} </p>}
       <Link href="/signup" id="create-account"> Create account </Link>
-
     </div>
   )
 }
