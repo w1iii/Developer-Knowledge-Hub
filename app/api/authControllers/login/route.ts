@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import pool from '../../../lib/db'
-import bcrypt from 'bcrypt'
+import pool from '../../../lib/db';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+
+interface User {
+  user_id: string;
+  username: string;
+  password_hash: string;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,8 +30,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const accessToken = jwt.sign({id: user.user_id}, process.env.JWT_SECRET!, {expiresIn: '15m'});
+
+
 
     const response = NextResponse.json({
+      token: accessToken,
       success: true,
       user: {
         id: user.user_id,
@@ -45,7 +56,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function authenticateUser(email: string, password: string){
+async function authenticateUser(email: string, password: string): Promise<User | null> {
     try{
         const query = `SELECT user_id, username, password_hash FROM users WHERE email = $1`
         const result = await pool.query(query, [email])
@@ -60,6 +71,5 @@ async function authenticateUser(email: string, password: string){
     }catch(e){
         console.log(e, 'server error')
     }
-return null
-
+  return null
 }
