@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from 'react'
+import Link from 'next/link';
 
 export default function Home(){
   const [username, setUsername] = useState("")
@@ -35,9 +36,11 @@ export default function Home(){
       setError(err)
     }
   }
+
   
   return(
     <div className="login-container">
+      <Link href="/"> back </Link>
       <h1> Signup </h1> 
       { message && <p> {message} </p>}
       <form onSubmit={handleSubmit}>

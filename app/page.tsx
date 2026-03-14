@@ -13,8 +13,6 @@ export default function Home(){
   const router = useRouter()
   
   const handleSubmit = async() =>{
-    console.log("Email: ", email)
-    console.log("Password: ", password)
     try{
       const response = await fetch('api/authControllers/login',{
         method: 'POST',

@@ -31,10 +31,9 @@ export function middleware(request: NextRequest) {
   } catch (err: any) {
     console.log('Error name:', err.name);
     console.log('Error message:', err.message);
-    console.log('===== END =====');
     return NextResponse.json(
       { error: 'Invalid or expired token' },
-      { status: 403 }
+      { status: 401 }
     );
   }
 }

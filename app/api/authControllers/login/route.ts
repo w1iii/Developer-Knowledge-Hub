@@ -31,7 +31,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const accessToken = jwt.sign({id: user.user_id}, process.env.JWT_SECRET!, {expiresIn: '15m'});
+    const accessToken = jwt.sign(
+      {id: user.user_id, username: user.username},
+      process.env.JWT_SECRET!, 
+      {expiresIn: '15m'});
+    const refreshToken = jwt.sign(
+      { id: user.user_id, username: user.username },
+      process.env.JWT_REFRESH_SECRET!,
+      { expiresIn: '7d' }
+    );
 
     const response = NextResponse.json({
       success: true,
@@ -40,11 +48,6 @@ export async function POST(request: NextRequest) {
         username: user.username,
       },
     })
-    const refreshToken = jwt.sign(
-      { id: user.user_id },
-      process.env.JWT_REFRESH_SECRET!,
-      { expiresIn: '7d' }
-    );
 
     response.cookies.set('token', accessToken, {
         httpOnly: true,
