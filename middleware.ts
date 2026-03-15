@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export default function middleware(request: NextRequest, next: () => void) {
+export default function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value
 
   if (!token) {

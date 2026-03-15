@@ -6,7 +6,7 @@ interface User {
   username: string;
 }
 
-export function middleware(request: NextRequest) {
+export function authenticateToken(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
   const token = authHeader?.split(' ')[1];
 
@@ -43,5 +43,6 @@ export const config = {
     '/api/protected/:path*',
     '/api/notes/:path*',
     '/api/folders/:path*',
+    '/api/postControllers/:path*', 
   ],
 };
