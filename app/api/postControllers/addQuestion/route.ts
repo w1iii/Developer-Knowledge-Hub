@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pool from '../../../lib/db';
 
-
 export async function POST(request: NextRequest) {
     const user_id = request.headers.get('x-user-id');
+    const username = request.headers.get('x-username');
     console.log("user id: ", user_id)
+    console.log("username: ", username)
+
     if(!user_id){
         console.log("No token, user_id: ", user_id)
         return NextResponse.json({ 
@@ -18,12 +20,12 @@ export async function POST(request: NextRequest) {
         const insertQuery = `
             INSERT INTO questions (user_id, title, description) 
             VALUES ($1,$2, $3)
-            RETURNING question_id, user_id title, description;`;
+            RETURNING question_id, user_id, title, description;`;
         const result = await pool.query(insertQuery, [user_id, title, description])
         console.log(result.rows[0])
         return NextResponse.json({ 
-            message: 'User added successfully',
-            user: result.rows[0]
+            message: 'Question added successfully',
+            result: result.rows[0]
         }, { status: 201 });
     }catch(e){
         console.log(e)
