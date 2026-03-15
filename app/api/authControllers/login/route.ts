@@ -10,7 +10,7 @@ interface User {
 }
 
 export async function POST(request: NextRequest) {
-
+  //ADD RATE LIMITING SOON
   try {
     const body = await request.json();
     const { email, password } = body;
