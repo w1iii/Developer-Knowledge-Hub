@@ -16,15 +16,16 @@ export async function GET(request: NextRequest) {
     }
 
     try{
-         const query = `
-            SELECT 
-                q.user_id,
-                u.username,
-                q.title,
-                q.description,
-                q.votes_count,
-                q.views
-            FROM questions q
+          const query = `
+             SELECT 
+                 q.question_id,
+                 q.user_id,
+                 u.username,
+                 q.title,
+                 q.description,
+                 q.votes_count,
+                 q.views
+             FROM questions q
             LEFT JOIN users u
                 ON q.user_id = u.user_id
             ORDER BY q.votes_count DESC, q.views DESC

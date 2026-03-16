@@ -22,7 +22,7 @@ export default async function middleware(request: NextRequest) {
   }
 
   // API routes - JWT verification + header injection
-  if (pathname.startsWith('/api/postControllers')) {
+  if (pathname.startsWith('/api/postControllers') || pathname === '/api/authControllers/me') {
 
     // const authHeader = request.headers.get('authorization')
     // const token = authHeader?.split(' ')[1]
@@ -30,7 +30,10 @@ export default async function middleware(request: NextRequest) {
       request.cookies.get('token')?.value ||
       request.headers.get('authorization')?.split(' ')[1]
 
+    console.log("Middleware: Path:", pathname, "Token present:", !!token)
+
     if (!token) {
+      console.log("Middleware: No token, returning 401")
       return NextResponse.json(
         { error: 'Access token required' },
         { status: 401 }
@@ -39,13 +42,12 @@ export default async function middleware(request: NextRequest) {
 
     try {
 
-      console.log("TOKEN:", token)
+      console.log("Middleware: Verifying token...")
 
-      const secret = new TextEncoder().encode(process.env.JWT_SECRET)
-
+      const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
       const { payload } = await jwtVerify(token, secret)
 
-      console.log("DECODED USER:", payload)
+      console.log("Middleware: Token valid, payload:", payload)
 
       const requestHeaders = new Headers(request.headers)
 
@@ -59,7 +61,7 @@ export default async function middleware(request: NextRequest) {
       })
 
     } catch (err) {
-      console.log("JWT ERROR:", err)
+      console.log("Middleware: JWT verification failed:", err)
       return NextResponse.json(
         { error: 'Invalid or expired token' },
         { status: 401 }
@@ -74,6 +76,8 @@ export const config = {
   matcher: [
     '/dashboard/:path*',
     '/api/postControllers/:path*',
-    '/api/postControllers'
+    '/api/postControllers',
+    '/api/authControllers/:path*',
+    '/api/authControllers'
   ],
 }

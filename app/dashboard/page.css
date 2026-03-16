@@ -1,0 +1,25 @@
+ .question-container{
+     background-color:teal;
+     color:white;
+ }
+.question-container-header{
+     display:flex;
+     gap:1rem;
+     align-items:center;
+ }
+
+.question-container-header button{
+     width:2rem;
+     height:2rem;
+ }
+
+.question-container-modal{
+     width:50%;
+     display:flex;
+     flex-direction:column;
+     background-color: beige;
+ }
+
+.question-container-modal input{
+     width:5rem;
+ }

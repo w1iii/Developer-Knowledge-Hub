@@ -16,6 +16,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { title, description } = body;
 
+    console.log("============ SERVER DATA ================")
+    console.log("Title: ", title, "Description: ", description)
     try{
         const insertQuery = `
             INSERT INTO questions (user_id, title, description) 
