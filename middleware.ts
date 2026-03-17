@@ -22,7 +22,7 @@ export default async function middleware(request: NextRequest) {
   }
 
   // API routes - JWT verification + header injection
-  if (pathname.startsWith('/api/postControllers') || pathname === '/api/authControllers/me') {
+  if (pathname.startsWith('/api/postControllers') || pathname.startsWith('/api/commentControllers') || pathname === '/api/authControllers/me') {
 
     // const authHeader = request.headers.get('authorization')
     // const token = authHeader?.split(' ')[1]
@@ -78,6 +78,8 @@ export const config = {
     '/api/postControllers/:path*',
     '/api/postControllers',
     '/api/authControllers/:path*',
-    '/api/authControllers'
+    '/api/authControllers',
+    '/api/commentControllers/:path*',
+    '/api/commentControllers',
   ],
 }
