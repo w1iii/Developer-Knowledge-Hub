@@ -20,6 +20,7 @@ export default function Dashboard(){
   const [newDescription, setnewDescription] = useState('')
   const [questions, setQuestions] = useState<Question[]>([])
   const [selectedQuestionId, setSelectedQuestionId] = useState<number | null>(null)
+  const [viewQuestionId, setViewQuestionId] = useState<number | null>(null)
   const [currentUserId, setCurrentUserId] = useState<number | null>(null)
   const router = useRouter()
 
@@ -174,6 +175,10 @@ export default function Dashboard(){
     }
   }
 
+  const viewQuestion = (question: Question) => {
+    setViewQuestionId(prev => prev === question.question_id ? null : question.question_id)
+  }
+
   return(
     <>
       <h1> Dashboard </h1>
@@ -190,7 +195,7 @@ export default function Dashboard(){
       }
       <div className="main-question-container">
         {questions.map((q: Question) => (
-          <div className="question-container" key={q.question_id} onClick={() => console.log("Question-container: ", q.question_id)}>
+          <div className="question-container" key={q.question_id} onClick={() => viewQuestion(q)}>
               <div className="question-container-header">
                 <p>{q.username}</p>
                 {(() => { return q.user_id === currentUserId && <button onClick={() => showModal(q)}>Edit Question</button>; })()}
@@ -207,31 +212,34 @@ export default function Dashboard(){
                   <p> Votes: 0 </p>
                 </div>
               </div>
-            <div className="question-container-view" key={q.question_id} onClick={() => console.log("Question-container: ", q.question_id)}>
-              <div className="question-container-header">
-                <p>{q.username}</p>
-                {(() => { return q.user_id === currentUserId && <button onClick={() => showModal(q)}>Edit Question</button>; })()}
-                {(() => { return q.user_id === currentUserId && <button onClick={() => handleDelete(q)}>Delete Question</button>; })()}
+
+            { viewQuestionId === q.question_id && 
+                <div className="question-container-view" key={q.question_id} onClick={() => console.log("Question-container: ", q.question_id)}>
+                  <div className="question-container-header">
+                    <p>{q.username}</p>
+                    {(() => { return q.user_id === currentUserId && <button onClick={() => showModal(q)}>Edit Question</button>; })()}
+                    {(() => { return q.user_id === currentUserId && <button onClick={() => handleDelete(q)}>Delete Question</button>; })()}
+                  </div>
+                  <div className="question-container-body">
+                    <h2>{q.title}</h2>
+                    <p>{q.description}</p>
+                  </div>
+                  <div className="question-container-bottom">
+                    <p> Tags: Next.js Typescript</p>
+                    <div className="question-container-actions">
+                      <p> Answers: 0 </p>
+                      <p> Votes: {q.votes_count} </p>
+                    </div>
+                    <div className="answer-section">
+                      <ul>
+                        <li> answer 1</li>
+                        <li> answer 2</li>
+                        <li> answer 3</li>
+                      </ul>
+                    </div>
+                  </div>
               </div>
-              <div className="question-container-body">
-                <h2>{q.title}</h2>
-                <p>{q.description}</p>
-              </div>
-              <div className="question-container-bottom">
-                <p> Tags: Next.js Typescript</p>
-                <div className="question-container-actions">
-                  <p> Answers: 0 </p>
-                  <p> Votes: {q.votes_count} </p>
-                </div>
-                <div className="answer-section">
-                  <ul>
-                    <li> answer 1</li>
-                    <li> answer 2</li>
-                    <li> answer 3</li>
-                  </ul>
-                </div>
-              </div>
-          </div>
+            }
             { selectedQuestionId === q.question_id && 
               <div className="question-container-modal">
                 <p>{q.username}</p>
