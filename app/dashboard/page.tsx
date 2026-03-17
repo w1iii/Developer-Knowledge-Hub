@@ -190,14 +190,48 @@ export default function Dashboard(){
       }
       <div className="main-question-container">
         {questions.map((q: Question) => (
-          <div className="question-container" key={q.question_id}>
+          <div className="question-container" key={q.question_id} onClick={() => console.log("Question-container: ", q.question_id)}>
               <div className="question-container-header">
                 <p>{q.username}</p>
                 {(() => { return q.user_id === currentUserId && <button onClick={() => showModal(q)}>Edit Question</button>; })()}
                 {(() => { return q.user_id === currentUserId && <button onClick={() => handleDelete(q)}>Delete Question</button>; })()}
               </div>
-              <h2>{q.title}</h2>
-              <p>{q.description}</p>
+              <div className="question-container-body">
+                <h2>{q.title}</h2>
+                <p>{q.description}</p>
+              </div>
+              <div className="question-container-bottom">
+                <p> Tags: Next.js Typescript</p>
+                <div className="question-container-actions">
+                  <p> Answers: 0 </p>
+                  <p> Votes: 0 </p>
+                </div>
+              </div>
+            <div className="question-container-view" key={q.question_id} onClick={() => console.log("Question-container: ", q.question_id)}>
+              <div className="question-container-header">
+                <p>{q.username}</p>
+                {(() => { return q.user_id === currentUserId && <button onClick={() => showModal(q)}>Edit Question</button>; })()}
+                {(() => { return q.user_id === currentUserId && <button onClick={() => handleDelete(q)}>Delete Question</button>; })()}
+              </div>
+              <div className="question-container-body">
+                <h2>{q.title}</h2>
+                <p>{q.description}</p>
+              </div>
+              <div className="question-container-bottom">
+                <p> Tags: Next.js Typescript</p>
+                <div className="question-container-actions">
+                  <p> Answers: 0 </p>
+                  <p> Votes: {q.votes_count} </p>
+                </div>
+                <div className="answer-section">
+                  <ul>
+                    <li> answer 1</li>
+                    <li> answer 2</li>
+                    <li> answer 3</li>
+                  </ul>
+                </div>
+              </div>
+          </div>
             { selectedQuestionId === q.question_id && 
               <div className="question-container-modal">
                 <p>{q.username}</p>

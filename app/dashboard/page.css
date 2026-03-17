@@ -1,7 +1,26 @@
  .question-container{
      background-color:teal;
      color:white;
+     margin-bottom:0.5rem;
+     width:50%;
+     cursor:pointer;
+     transition:0.2s;
  }
+
+ .question-container:hover{
+     transition:0.3s;
+     transform: scale(1.02);
+ }
+
+ .question-container-view{
+     background-color:plum;
+     color:white;
+     margin-bottom:0.5rem;
+     width:50%;
+     cursor:pointer;
+     transition:0.2s;
+ }
+
 .question-container-header{
      display:flex;
      gap:1rem;
@@ -22,4 +41,15 @@
 
 .question-container-modal input{
      width:5rem;
+ }
+ .question-container-body{
+     margin-bottom:2rem;
+ }
+
+ .question-container-bottom{
+     border: 2px solid red;
+ }
+.question-container-actions{
+     display:flex;
+     gap:1rem;
  }
