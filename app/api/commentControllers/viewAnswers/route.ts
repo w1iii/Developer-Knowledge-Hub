@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     const { question_id } = body;
 
     try{
-        const selectQuery = `SELECT answer_id, content FROM answers WHERE question_id = $1`
+        const selectQuery = `SELECT answer_id, user_id, content FROM answers WHERE question_id = $1`
         const result = await pool.query(selectQuery, [question_id])
         if(result.rows.length === 0){
             return NextResponse.json({ message: 'No comments/answers found'})

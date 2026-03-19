@@ -21,9 +21,17 @@ export async function POST(request: NextRequest) {
     //CHECK IF USER IF USER_ID === ANSWER'S USER_ID
     try{
         const deleteQuery = `
-            DELETE FROM answers WHERE answer_id = $1
+            DELETE FROM answers WHERE answer_id = $1 AND user_id = $2
+            RETURNING answer_id
         `
-        const result = await pool.query(deleteQuery, [answer_id])
+        const result = await pool.query(deleteQuery, [answer_id, user_id])
+        
+        if (result.rows.length === 0) {
+            return NextResponse.json({ 
+                error: 'Answer not found or you are not the owner',
+            }, { status: 403 });
+        }
+        
         console.log(result.rows[0])
         return NextResponse.json({ 
             message: 'Answer deleted successfully',

@@ -1,9 +1,12 @@
 .main-question-container{
+    width:100%;
+}
+
+.question-section-container{
     display:flex;
     flex-direction: column;
-    width:100%;
     align-items: center;
-
+    width:100%;
 }
  .question-container{
      background-color:teal;
@@ -23,8 +26,8 @@
      background-color:plum;
      color:white;
      margin-bottom:0.5rem;
-     cursor:pointer;
      transition:0.2s;
+    width:50%;
  }
 
 .question-container-header{
