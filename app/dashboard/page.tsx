@@ -14,11 +14,17 @@ interface Question {
   views: number
 }
 
+interface Answers{
+  answer_id: number
+  content: string
+}
+
 export default function Dashboard(){
   const [addQuestionModal, setAddQuestionModal] = useState(false)
   const [newTitle, setnewTitle] = useState('')
   const [newDescription, setnewDescription] = useState('')
   const [questions, setQuestions] = useState<Question[]>([])
+  const [answers, setAnswers] = useState<Answers[]>([])
   const [selectedQuestionId, setSelectedQuestionId] = useState<number | null>(null)
   const [viewQuestionId, setViewQuestionId] = useState<number | null>(null)
   const [currentUserId, setCurrentUserId] = useState<number | null>(null)
@@ -175,8 +181,26 @@ export default function Dashboard(){
     }
   }
 
-  const viewQuestion = (question: Question) => {
+  const viewQuestion = async (question: Question) => {
     setViewQuestionId(prev => prev === question.question_id ? null : question.question_id)
+    // fetch answers from db
+
+    try{
+      const res = await fetch('/api/commentControllers/viewAnswers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          question_id: question.question_id,
+        })
+      })
+      const data = await res.json()
+
+      setAnswers(data.result)
+      console.log(answers)
+    }catch(e){
+      console.log('Fetch error: ', e)
+    }
   }
 
   return(
@@ -198,8 +222,6 @@ export default function Dashboard(){
           <div className="question-container" key={q.question_id} onClick={() => viewQuestion(q)}>
               <div className="question-container-header">
                 <p>{q.username}</p>
-                {(() => { return q.user_id === currentUserId && <button onClick={() => showModal(q)}>Edit Question</button>; })()}
-                {(() => { return q.user_id === currentUserId && <button onClick={() => handleDelete(q)}>Delete Question</button>; })()}
               </div>
               <div className="question-container-body">
                 <h2>{q.title}</h2>
@@ -227,15 +249,25 @@ export default function Dashboard(){
                   <div className="question-container-bottom">
                     <p> Tags: Next.js Typescript</p>
                     <div className="question-container-actions">
-                      <p> Answers: 0 </p>
+                      <p> Answers: Load answers from DB </p>
                       <p> Votes: {q.votes_count} </p>
                     </div>
+                  { 
+                    // Map Answers DB  //
+                  }
                     <div className="answer-section">
+                      { answers ?  
                       <ul>
-                        <li> answer 1</li>
-                        <li> answer 2</li>
-                        <li> answer 3</li>
+                        
+                        {answers.map((a: Answers) => (
+                          <li> {a.content}</li>
+                        ))}
+
                       </ul>
+                      :
+                      <p> no answers yet. </p>
+                    }
+
                     </div>
                   </div>
               </div>

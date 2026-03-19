@@ -1,7 +1,14 @@
+.main-question-container{
+    display:flex;
+    flex-direction: column;
+    width:100%;
+    align-items: center;
+
+}
  .question-container{
      background-color:teal;
      color:white;
-     margin-bottom:0.5rem;
+     margin-bottom:1.5rem;
      width:50%;
      cursor:pointer;
      transition:0.2s;
@@ -16,7 +23,6 @@
      background-color:plum;
      color:white;
      margin-bottom:0.5rem;
-     width:50%;
      cursor:pointer;
      transition:0.2s;
  }
