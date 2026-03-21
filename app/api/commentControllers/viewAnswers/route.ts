@@ -25,7 +25,8 @@ export async function POST(request: NextRequest) {
                 a.answer_id, 
                 a.user_id, 
                 a.content, 
-                a.votes_count,
+                a.upvote_count,
+                a.downvote_count,
                 COALESCE(
                     (SELECT vote_type FROM votes 
                      WHERE user_id = $1 AND answer_id = a.answer_id),
