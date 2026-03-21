@@ -341,62 +341,61 @@ export default function Dashboard(){
     }
   };
 
-  // ============================================
-  // ANSWER VOTING (Template - implement later)
-  // ============================================
-  // const toggleAnswerVote = async (answer: Answers, voteType: VoteType) => {
-  //   const previousVote = answer.user_vote;
-  //   const previousCount = answer.votes_count;
-  // 
-  //   let newVote: 'upvote' | 'downvote' | null;
-  //   let countDelta: number;
-  // 
-  //   if (previousVote === voteType) {
-  //     newVote = null;
-  //     countDelta = voteType === 'upvote' ? -1 : 1;
-  //   } else {
-  //     newVote = voteType;
-  //     if (previousVote === null) {
-  //       countDelta = voteType === 'upvote' ? 1 : -1;
-  //     } else {
-  //       countDelta = voteType === 'upvote' ? 2 : -2;
-  //     }
-  //   }
-  // 
-  //   setAnswers(prev => prev.map(a => 
-  //     a.answer_id === answer.answer_id
-  //       ? { ...a, user_vote: newVote, votes_count: a.votes_count + countDelta }
-  //       : a
-  //   ));
-  // 
-  //   try {
-  //     if (newVote === null) {
-  //       await fetch('/api/voteControllers/deleteVote', {
-  //         method: 'DELETE',
-  //         headers: { 'Content-Type': 'application/json' },
-  //         credentials: 'include',
-  //         body: JSON.stringify({ answer_id: answer.answer_id })
-  //       });
-  //     } else {
-  //       const res = await fetch('/api/voteControllers/addVote', {
-  //         method: 'POST',
-  //         headers: { 'Content-Type': 'application/json' },
-  //         credentials: 'include',
-  //         body: JSON.stringify({ answer_id: answer.answer_id, vote_type: voteType })
-  //       });
-  //       if (!res.ok) {
-  //         throw new Error('Failed to vote');
-  //       }
-  //     }
-  //   } catch (e) {
-  //     console.log("Vote error:", e);
-  //     setAnswers(prev => prev.map(a => 
-  //       a.answer_id === answer.answer_id
-  //         ? { ...a, user_vote: previousVote, votes_count: previousCount }
-  //         : a
-  //     ));
-  //   }
-  // };
+  // ANSWER VOTES CONTROLLER
+  const toggleAnswerVote = async (answer: Answers, voteType: VoteType) => {
+    const previousVote = answer.user_vote;
+    const previousCount = answer.votes_count;
+
+    let newVote: 'upvote' | 'downvote' | null;
+    let countDelta: number;
+
+    if (previousVote === voteType) {
+      newVote = null;
+      countDelta = voteType === 'upvote' ? -1 : 1;
+    } else {
+      newVote = voteType;
+      if (previousVote === null) {
+        countDelta = voteType === 'upvote' ? 1 : -1;
+      } else {
+        countDelta = voteType === 'upvote' ? 2 : -2;
+      }
+    }
+
+    // Update UI answer votes to updated data
+    setAnswers(prev => prev.map(a => 
+      a.answer_id === answer.answer_id
+        ? { ...a, user_vote: newVote, votes_count: a.votes_count + countDelta }
+        : a
+    ));
+
+    try {
+      if (newVote === null) {
+        await fetch('/api/voteControllers/deleteVote', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ answer_id: answer.answer_id })
+        });
+      } else {
+        const res = await fetch('/api/voteControllers/addVote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ answer_id: answer.answer_id, vote_type: voteType })
+        });
+        if (!res.ok) {
+          throw new Error('Failed to vote');
+        }
+      }
+    } catch (e) {
+      console.log("Vote error:", e);
+      setAnswers(prev => prev.map(a => 
+        a.answer_id === answer.answer_id
+          ? { ...a, user_vote: previousVote, votes_count: previousCount }
+          : a
+      ));
+    }
+  };
 
 
   return(
@@ -469,21 +468,7 @@ export default function Dashboard(){
                   <div className="question-container-bottom">
                     <p> Tags: Next.js Typescript</p>
                     <div className="question-container-actions">
-                      <p> Answers: Load answers from DB </p>
-                      <div className="vote-container">
-                        <button 
-                          className={`vote-btn vote-btn-up ${q.user_vote === 'upvote' ? 'active' : ''}`}
-                          onClick={() => toggleVote(q, 'upvote')}
-                        >
-                          ▲ {q.votes_count}
-                        </button>
-                        <button 
-                          className={`vote-btn vote-btn-down ${q.user_vote === 'downvote' ? 'active' : ''}`}
-                          onClick={() => toggleVote(q, 'downvote')}
-                        >
-                          ▼
-                        </button>
-                      </div>
+                      <h2> Answers </h2>
                     </div>
                   { 
                     // Map Answers DB  //
@@ -497,14 +482,14 @@ export default function Dashboard(){
                             <div className="answer-vote-container">
                               <button 
                                 className={`vote-btn vote-btn-up ${a.user_vote === 'upvote' ? 'active' : ''}`}
-                                // onClick={() => toggleAnswerVote(a, 'upvote')} // Uncomment when implementing answer voting
+                                onClick={() => toggleAnswerVote(a, 'upvote')} 
                               >
                                 ▲
                               </button>
                               <span>{a.votes_count || 0}</span>
                               <button 
                                 className={`vote-btn vote-btn-down ${a.user_vote === 'downvote' ? 'active' : ''}`}
-                                // onClick={() => toggleAnswerVote(a, 'downvote')} // Uncomment when implementing answer voting
+                                onClick={() => toggleAnswerVote(a, 'downvote')} 
                               >
                                 ▼
                               </button>
