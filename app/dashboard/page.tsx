@@ -281,6 +281,42 @@ export default function Dashboard(){
       alert('Error adding answer');
     }
   };
+
+  const upVote = async(question: Question)=> {
+    try{
+      await fetch('/api/voteControllers/addVote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          question_id: question.question_id,
+          vote_type: "upvote" 
+        })
+      });
+    }catch(e){
+      console.log("Error: ", e)
+      console.log("Failed to upvote")
+    }
+  };
+const downVote = async(question: Question)=> {
+    try{
+      await fetch('/api/voteControllers/addVote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          question_id: question.question_id,
+          vote_type: "downVote" 
+        })
+      });
+    }catch(e){
+      console.log("Error: ", e)
+      console.log("Failed to upvote")
+    }
+  };
+
+
+
   return(
     <>
       <h1> Dashboard </h1>
@@ -298,10 +334,14 @@ export default function Dashboard(){
       <div className="main-question-container">
         {questions.map((q: Question) => (
           <div className="question-section-container" key={q.question_id} >
-          <div className="question-container" onClick={() => viewQuestion(q)}>
               <div className="question-container-header">
                 <p>{q.username}</p>
+                <div className="vote-container">
+                  <button onClick={ () => upVote(q) } > {q.votes_count} upvote </button>
+                  <button onClick={ () => downVote(q) } > {q.votes_count} upvote </button>
+                </div>
               </div>
+          <div className="question-container" onClick={() => viewQuestion(q)}>
               <div className="question-container-body">
                 <h2>{q.title}</h2>
                 <p>{q.description}</p>
