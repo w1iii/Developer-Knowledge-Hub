@@ -10,7 +10,6 @@ interface Question {
   username: string
   title: string
   description: string
-  votes_count: number
   views: number
   upvote_count: number
   downvote_count: number
@@ -23,7 +22,8 @@ interface Answers{
   answer_id: number
   user_id: number
   content: string
-  votes_count: number
+  upvote_count: number
+  downvote_count: number
   user_vote: 'upvote' | 'downvote' | null
 }
 
@@ -294,26 +294,47 @@ export default function Dashboard(){
 
   const toggleVote = async (question: Question, voteType: VoteType) => {
     const previousVote = question.user_vote;
-    const previousCount = question.votes_count;
+    const previousUpvoteCount = question.upvote_count;
+    const previousDownvoteCount = question.downvote_count;
 
     let newVote: 'upvote' | 'downvote' | null;
-    let countDelta: number;
+    let upvoteDelta = 0;
+    let downvoteDelta = 0;
 
     if (previousVote === voteType) {
       newVote = null;
-      countDelta = voteType === 'upvote' ? -1 : 1;
+      if (voteType === 'upvote') {
+        upvoteDelta = -1;
+      } else {
+        downvoteDelta = -1;
+      }
     } else {
       newVote = voteType;
       if (previousVote === null) {
-        countDelta = voteType === 'upvote' ? 1 : -1;
+        if (voteType === 'upvote') {
+          upvoteDelta = 1;
+        } else {
+          downvoteDelta = 1;
+        }
       } else {
-        countDelta = voteType === 'upvote' ? 2 : -2;
+        if (voteType === 'upvote') {
+          upvoteDelta = 1;
+          downvoteDelta = -1;
+        } else {
+          upvoteDelta = -1;
+          downvoteDelta = 1;
+        }
       }
     }
 
     setQuestions(prev => prev.map(q => 
       q.question_id === question.question_id
-        ? { ...q, user_vote: newVote, votes_count: q.votes_count + countDelta, upvote_count: q.upvote_count + countDelta}
+        ? { 
+            ...q, 
+            user_vote: newVote, 
+            upvote_count: q.upvote_count + upvoteDelta,
+            downvote_count: q.downvote_count + downvoteDelta
+          }
         : q
     ));
 
@@ -340,7 +361,12 @@ export default function Dashboard(){
       console.log("Vote error:", e);
       setQuestions(prev => prev.map(q => 
         q.question_id === question.question_id
-          ? { ...q, user_vote: previousVote, votes_count: previousCount }
+          ? { 
+              ...q, 
+              user_vote: previousVote, 
+              upvote_count: previousUpvoteCount,
+              downvote_count: previousDownvoteCount
+            }
           : q
       ));
     }
@@ -349,27 +375,47 @@ export default function Dashboard(){
   // ANSWER VOTES CONTROLLER
   const toggleAnswerVote = async (answer: Answers, voteType: VoteType) => {
     const previousVote = answer.user_vote;
-    const previousCount = answer.votes_count;
+    const previousUpvoteCount = answer.upvote_count;
+    const previousDownvoteCount = answer.downvote_count;
 
     let newVote: 'upvote' | 'downvote' | null;
-    let countDelta: number;
+    let upvoteDelta = 0;
+    let downvoteDelta = 0;
 
     if (previousVote === voteType) {
       newVote = null;
-      countDelta = voteType === 'upvote' ? -1 : 1;
+      if (voteType === 'upvote') {
+        upvoteDelta = -1;
+      } else {
+        downvoteDelta = -1;
+      }
     } else {
       newVote = voteType;
       if (previousVote === null) {
-        countDelta = voteType === 'upvote' ? 1 : -1;
+        if (voteType === 'upvote') {
+          upvoteDelta = 1;
+        } else {
+          downvoteDelta = 1;
+        }
       } else {
-        countDelta = voteType === 'upvote' ? 2 : -2;
+        if (voteType === 'upvote') {
+          upvoteDelta = 1;
+          downvoteDelta = -1;
+        } else {
+          upvoteDelta = -1;
+          downvoteDelta = 1;
+        }
       }
     }
 
-    // Update UI answer votes to updated data
     setAnswers(prev => prev.map(a => 
       a.answer_id === answer.answer_id
-        ? { ...a, user_vote: newVote, votes_count: a.votes_count + countDelta }
+        ? { 
+            ...a, 
+            user_vote: newVote, 
+            upvote_count: a.upvote_count + upvoteDelta,
+            downvote_count: a.downvote_count + downvoteDelta
+          }
         : a
     ));
 
@@ -396,7 +442,12 @@ export default function Dashboard(){
       console.log("Vote error:", e);
       setAnswers(prev => prev.map(a => 
         a.answer_id === answer.answer_id
-          ? { ...a, user_vote: previousVote, votes_count: previousCount }
+          ? { 
+              ...a, 
+              user_vote: previousVote, 
+              upvote_count: previousUpvoteCount,
+              downvote_count: previousDownvoteCount
+            }
           : a
       ));
     }
@@ -492,13 +543,14 @@ export default function Dashboard(){
                               >
                                 ▲
                               </button>
-                              <span>{a.votes_count || 0}</span>
+                              <span>{a.upvote_count}</span>
                               <button 
                                 className={`vote-btn vote-btn-down ${a.user_vote === 'downvote' ? 'active' : ''}`}
                                 onClick={() => toggleAnswerVote(a, 'downvote')} 
                               >
                                 ▼
                               </button>
+                              <span>{a.downvote_count}</span>
                             </div>
                             {editingAnswerId === a.answer_id ? (
                               <>

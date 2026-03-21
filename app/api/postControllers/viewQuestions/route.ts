@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
              FROM questions q
             LEFT JOIN users u
                 ON q.user_id = u.user_id
-            ORDER BY q.votes_count DESC, q.views DESC
+            ORDER BY (q.upvote_count - q.downvote_count) DESC, q.upvote_count DESC, q.views DESC
         `;
 
         const result = await pool.query(query, [user_id]);
