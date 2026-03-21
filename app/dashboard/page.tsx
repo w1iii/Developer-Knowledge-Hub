@@ -12,6 +12,8 @@ interface Question {
   description: string
   votes_count: number
   views: number
+  upvote_count: number
+  downvote_count: number
   user_vote: 'upvote' | 'downvote' | null
 }
 
@@ -46,6 +48,8 @@ export default function Dashboard(){
 
 
   const router = useRouter()
+  
+  // CHECK IF HAS TOKEN (LOGGED IN BEFORE)
   useEffect(() => {
     async function loadUser() {
       try {
@@ -63,6 +67,7 @@ export default function Dashboard(){
     loadUser()
   }, [router])
 
+  //LOAD QUESTIONS DASHBOARD ON LOG IN
   useEffect(() => {
     async function loadQuestions() {
       const res = await fetch("/api/postControllers/viewQuestions", {
@@ -308,7 +313,7 @@ export default function Dashboard(){
 
     setQuestions(prev => prev.map(q => 
       q.question_id === question.question_id
-        ? { ...q, user_vote: newVote, votes_count: q.votes_count + countDelta }
+        ? { ...q, user_vote: newVote, votes_count: q.votes_count + countDelta, upvote_count: q.upvote_count + countDelta}
         : q
     ));
 
@@ -418,12 +423,14 @@ export default function Dashboard(){
               <div className="question-container-header">
                 <p>{q.username}</p>
                 <div className="vote-container">
+                  <p className="upvote-count"> {q.upvote_count} </p>
                   <button 
                     className={`vote-btn vote-btn-up ${q.user_vote === 'upvote' ? 'active' : ''}`}
                     onClick={() => toggleVote(q, 'upvote')}
                   >
-                    ▲ {q.votes_count}
+                    ▲ 
                   </button>
+                  <p className="downvote_count"> {q.downvote_count} </p>
                   <button 
                     className={`vote-btn vote-btn-down ${q.user_vote === 'downvote' ? 'active' : ''}`}
                     onClick={() => toggleVote(q, 'downvote')}
@@ -441,7 +448,6 @@ export default function Dashboard(){
                 <p> Tags: Next.js Typescript</p>
                 <div className="question-container-actions">
                   <p> Answers: 0 </p>
-                  <p> Votes: 0 </p>
                 </div>
               </div>
             
