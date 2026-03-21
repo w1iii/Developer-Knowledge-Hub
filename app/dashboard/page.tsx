@@ -12,12 +12,17 @@ interface Question {
   description: string
   votes_count: number
   views: number
+  user_vote: 'upvote' | 'downvote' | null
 }
+
+type VoteType = 'upvote' | 'downvote';
 
 interface Answers{
   answer_id: number
   user_id: number
   content: string
+  votes_count: number
+  user_vote: 'upvote' | 'downvote' | null
 }
 
 export default function Dashboard(){
@@ -282,39 +287,116 @@ export default function Dashboard(){
     }
   };
 
-  const upVote = async(question: Question)=> {
-    try{
-      await fetch('/api/voteControllers/addVote', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          question_id: question.question_id,
-          vote_type: "upvote" 
-        })
-      });
-    }catch(e){
-      console.log("Error: ", e)
-      console.log("Failed to upvote")
+  const toggleVote = async (question: Question, voteType: VoteType) => {
+    const previousVote = question.user_vote;
+    const previousCount = question.votes_count;
+
+    let newVote: 'upvote' | 'downvote' | null;
+    let countDelta: number;
+
+    if (previousVote === voteType) {
+      newVote = null;
+      countDelta = voteType === 'upvote' ? -1 : 1;
+    } else {
+      newVote = voteType;
+      if (previousVote === null) {
+        countDelta = voteType === 'upvote' ? 1 : -1;
+      } else {
+        countDelta = voteType === 'upvote' ? 2 : -2;
+      }
     }
-  };
-const downVote = async(question: Question)=> {
-    try{
-      await fetch('/api/voteControllers/addVote', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          question_id: question.question_id,
-          vote_type: "downVote" 
-        })
-      });
-    }catch(e){
-      console.log("Error: ", e)
-      console.log("Failed to upvote")
+
+    setQuestions(prev => prev.map(q => 
+      q.question_id === question.question_id
+        ? { ...q, user_vote: newVote, votes_count: q.votes_count + countDelta }
+        : q
+    ));
+
+    try {
+      if (newVote === null) {
+        await fetch('/api/voteControllers/deleteVote', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ question_id: question.question_id })
+        });
+      } else {
+        const res = await fetch('/api/voteControllers/addVote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ question_id: question.question_id, vote_type: voteType })
+        });
+        if (!res.ok) {
+          throw new Error('Failed to vote');
+        }
+      }
+    } catch (e) {
+      console.log("Vote error:", e);
+      setQuestions(prev => prev.map(q => 
+        q.question_id === question.question_id
+          ? { ...q, user_vote: previousVote, votes_count: previousCount }
+          : q
+      ));
     }
   };
 
+  // ============================================
+  // ANSWER VOTING (Template - implement later)
+  // ============================================
+  // const toggleAnswerVote = async (answer: Answers, voteType: VoteType) => {
+  //   const previousVote = answer.user_vote;
+  //   const previousCount = answer.votes_count;
+  // 
+  //   let newVote: 'upvote' | 'downvote' | null;
+  //   let countDelta: number;
+  // 
+  //   if (previousVote === voteType) {
+  //     newVote = null;
+  //     countDelta = voteType === 'upvote' ? -1 : 1;
+  //   } else {
+  //     newVote = voteType;
+  //     if (previousVote === null) {
+  //       countDelta = voteType === 'upvote' ? 1 : -1;
+  //     } else {
+  //       countDelta = voteType === 'upvote' ? 2 : -2;
+  //     }
+  //   }
+  // 
+  //   setAnswers(prev => prev.map(a => 
+  //     a.answer_id === answer.answer_id
+  //       ? { ...a, user_vote: newVote, votes_count: a.votes_count + countDelta }
+  //       : a
+  //   ));
+  // 
+  //   try {
+  //     if (newVote === null) {
+  //       await fetch('/api/voteControllers/deleteVote', {
+  //         method: 'DELETE',
+  //         headers: { 'Content-Type': 'application/json' },
+  //         credentials: 'include',
+  //         body: JSON.stringify({ answer_id: answer.answer_id })
+  //       });
+  //     } else {
+  //       const res = await fetch('/api/voteControllers/addVote', {
+  //         method: 'POST',
+  //         headers: { 'Content-Type': 'application/json' },
+  //         credentials: 'include',
+  //         body: JSON.stringify({ answer_id: answer.answer_id, vote_type: voteType })
+  //       });
+  //       if (!res.ok) {
+  //         throw new Error('Failed to vote');
+  //       }
+  //     }
+  //   } catch (e) {
+  //     console.log("Vote error:", e);
+  //     setAnswers(prev => prev.map(a => 
+  //       a.answer_id === answer.answer_id
+  //         ? { ...a, user_vote: previousVote, votes_count: previousCount }
+  //         : a
+  //     ));
+  //   }
+  // };
 
 
   return(
@@ -337,8 +419,18 @@ const downVote = async(question: Question)=> {
               <div className="question-container-header">
                 <p>{q.username}</p>
                 <div className="vote-container">
-                  <button onClick={ () => upVote(q) } > {q.votes_count} upvote </button>
-                  <button onClick={ () => downVote(q) } > {q.votes_count} upvote </button>
+                  <button 
+                    className={`vote-btn vote-btn-up ${q.user_vote === 'upvote' ? 'active' : ''}`}
+                    onClick={() => toggleVote(q, 'upvote')}
+                  >
+                    ▲ {q.votes_count}
+                  </button>
+                  <button 
+                    className={`vote-btn vote-btn-down ${q.user_vote === 'downvote' ? 'active' : ''}`}
+                    onClick={() => toggleVote(q, 'downvote')}
+                  >
+                    ▼
+                  </button>
                 </div>
               </div>
           <div className="question-container" onClick={() => viewQuestion(q)}>
@@ -378,7 +470,20 @@ const downVote = async(question: Question)=> {
                     <p> Tags: Next.js Typescript</p>
                     <div className="question-container-actions">
                       <p> Answers: Load answers from DB </p>
-                      <p> Votes: {q.votes_count} </p>
+                      <div className="vote-container">
+                        <button 
+                          className={`vote-btn vote-btn-up ${q.user_vote === 'upvote' ? 'active' : ''}`}
+                          onClick={() => toggleVote(q, 'upvote')}
+                        >
+                          ▲ {q.votes_count}
+                        </button>
+                        <button 
+                          className={`vote-btn vote-btn-down ${q.user_vote === 'downvote' ? 'active' : ''}`}
+                          onClick={() => toggleVote(q, 'downvote')}
+                        >
+                          ▼
+                        </button>
+                      </div>
                     </div>
                   { 
                     // Map Answers DB  //
@@ -388,7 +493,22 @@ const downVote = async(question: Question)=> {
                       <ul>
                         
                         {answers.map((a: Answers) => (
-                          <li key={a.answer_id}>
+                          <li key={a.answer_id} className="answer-item">
+                            <div className="answer-vote-container">
+                              <button 
+                                className={`vote-btn vote-btn-up ${a.user_vote === 'upvote' ? 'active' : ''}`}
+                                // onClick={() => toggleAnswerVote(a, 'upvote')} // Uncomment when implementing answer voting
+                              >
+                                ▲
+                              </button>
+                              <span>{a.votes_count || 0}</span>
+                              <button 
+                                className={`vote-btn vote-btn-down ${a.user_vote === 'downvote' ? 'active' : ''}`}
+                                // onClick={() => toggleAnswerVote(a, 'downvote')} // Uncomment when implementing answer voting
+                              >
+                                ▼
+                              </button>
+                            </div>
                             {editingAnswerId === a.answer_id ? (
                               <>
                                 <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} />
