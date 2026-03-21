@@ -24,14 +24,19 @@ export async function GET(request: NextRequest) {
                  q.title,
                  q.description,
                  q.votes_count,
-                 q.views
+                 q.views,
+                 COALESCE(
+                     (SELECT vote_type FROM votes 
+                      WHERE user_id = $1 AND question_id = q.question_id),
+                     NULL
+                 ) as user_vote
              FROM questions q
             LEFT JOIN users u
                 ON q.user_id = u.user_id
             ORDER BY q.votes_count DESC, q.views DESC
         `;
 
-        const result = await pool.query(query);       
+        const result = await pool.query(query, [user_id]);
         const data = result.rows;
         console.log("Data: ", data);
         return NextResponse.json(result.rows);
