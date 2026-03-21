@@ -17,13 +17,14 @@ export async function GET(request: NextRequest) {
 
     try{
           const query = `
-             SELECT 
+              SELECT 
                  q.question_id,
                  q.user_id,
                  u.username,
                  q.title,
                  q.description,
-                 q.votes_count,
+                 q.upvote_count,
+                 q.downvote_count,
                  q.views,
                  COALESCE(
                      (SELECT vote_type FROM votes 
