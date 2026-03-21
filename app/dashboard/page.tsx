@@ -29,6 +29,8 @@ interface Answers{
 
 export default function Dashboard(){
   const [currentUserId, setCurrentUserId] = useState<number | null>(null)
+  sessionStorage.setItem('user_id', String(currentUserId))
+
   const [addQuestionModal, setAddQuestionModal] = useState(false)
 
   const [newTitle, setnewTitle] = useState('')
@@ -90,10 +92,13 @@ export default function Dashboard(){
     }
 
   const handleLogout = async () =>{
+    const viewedKey = 'viewedQuestions';
     try{
       await fetch('/api/authControllers/logout', {
         method: 'POST',
       })
+      sessionStorage.removeItem('user_id')
+      sessionStorage.removeItem(viewedKey);
       router.push('/')
     }catch(e){
       console.log(e)
@@ -223,6 +228,35 @@ export default function Dashboard(){
     const isClosing = viewQuestionId === question.question_id
     setViewQuestionId(isClosing ? null : question.question_id)
     setCurrentViewingQuestionId(isClosing ? null : question.question_id)
+
+    const viewedKey = 'viewedQuestions';
+    const viewed: number[] = JSON.parse(sessionStorage.getItem(viewedKey) || '[]');
+
+    if (!isClosing && !viewed.includes(question.question_id)) {
+      const newViewed = [...viewed, question.question_id];
+      sessionStorage.setItem(viewedKey, JSON.stringify(newViewed));
+
+      try{
+        const res = await fetch('/api/postControllers/viewSingleQuestion', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            question_id: question.question_id,
+          })
+        })
+        const data = await res.json();
+        setQuestions(prev => prev.map(q => 
+          q.question_id === question.question_id 
+            ? { ...q, views: data.views } 
+            : q
+        ));
+      }catch(e){
+        console.log("Error: ", e)
+        console.log("Error in adding view")
+      }
+    }
+    
     if (!isClosing) {
       await loadAnswers(question.question_id)
     }
@@ -489,6 +523,7 @@ export default function Dashboard(){
                     ▼
                   </button>
                 </div>
+                <p className="question-views"> views: {q.views} </p>
               </div>
           <div className="question-container" onClick={() => viewQuestion(q)}>
               <div className="question-container-body">
