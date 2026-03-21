@@ -60,11 +60,17 @@ export async function DELETE(request: NextRequest) {
             [user_id, targetId]
         );
 
-        const voteDelta = vote_type === 'upvote' ? -1 : 1;
-        await pool.query(
-            `UPDATE ${targetTable} SET votes_count = votes_count + $1 WHERE ${uniqueColumn} = $2`,
-            [voteDelta, targetId]
-        );
+        if (vote_type === 'upvote') {
+            await pool.query(
+                `UPDATE ${targetTable} SET upvote_count = upvote_count - 1 WHERE ${uniqueColumn} = $1`,
+                [targetId]
+            );
+        } else {
+            await pool.query(
+                `UPDATE ${targetTable} SET downvote_count = downvote_count - 1 WHERE ${uniqueColumn} = $1`,
+                [targetId]
+            );
+        }
 
         return NextResponse.json({ 
             message: 'Vote deleted successfully',

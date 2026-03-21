@@ -35,7 +35,6 @@ export async function POST(request: NextRequest) {
         let targetTable = '';
         let targetId = 0;
         let uniqueColumn = '';
-        const voteCountColumn = 'votes_count';
 
         if (question_id) {
             targetTable = 'questions';
@@ -69,11 +68,17 @@ export async function POST(request: NextRequest) {
             [user_id, targetId, vote_type]
         );
 
-        const voteDelta = vote_type === 'upvote' ? 1 : -1;
-        await pool.query(
-            `UPDATE ${targetTable} SET ${voteCountColumn} = ${voteCountColumn} + $1 WHERE ${uniqueColumn} = $2`,
-            [voteDelta, targetId]
-        );
+        if (vote_type === 'upvote') {
+            await pool.query(
+                `UPDATE ${targetTable} SET upvote_count = upvote_count + 1 WHERE ${uniqueColumn} = $1`,
+                [targetId]
+            );
+        } else {
+            await pool.query(
+                `UPDATE ${targetTable} SET downvote_count = downvote_count + 1 WHERE ${uniqueColumn} = $1`,
+                [targetId]
+            );
+        }
 
         console.log("==============================")
         console.log("vote added successfully")
