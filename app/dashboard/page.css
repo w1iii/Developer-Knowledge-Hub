@@ -120,11 +120,6 @@
      padding: 0.125rem 0.375rem;
  }
 
-.tags-display {
-    background-color: blue;
-
-}
-
 .tags-selection {
   display: flex;
   flex-wrap: wrap;

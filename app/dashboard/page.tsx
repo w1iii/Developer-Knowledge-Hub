@@ -53,10 +53,38 @@ export default function Dashboard(){
   const [editingAnswerId, setEditingAnswerId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState('');
   const [newAnswerContent, setNewAnswerContent] = useState('');
+
   const [availableTags, setAvailableTags] = useState<Tag[]>([])
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([])
 
-  console.log("Available Tags: ", availableTags)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResult, setSearchResult] = useState([])
+
+  // SEARCH INPUT LOGIC
+  useEffect(() =>{
+    if(!searchQuery || searchQuery.length < 3){
+      setSearchResult([])
+    }
+    try{
+      const delay = setTimeout(async() =>{
+        const res = await fetch('/api/searchController', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            searchQuery: searchQuery
+          })
+        })
+        const data = await res.json()
+        setSearchResult(data)
+      }, 250)
+      return () => clearTimeout(delay)
+    }catch{
+      console.log("==================================")
+      console.log("SEARCH CONTROLLER NOT IMPLEMENTED")
+      console.log("==================================")
+    }
+  }, [searchQuery])
 
   const router = useRouter()
   
@@ -519,6 +547,19 @@ export default function Dashboard(){
   return(
     <>
       <h1> Dashboard </h1>
+      <input type='text' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder='search' />
+      {searchResult.length > 0 && (
+        <div className="search-result-container">
+          {searchResult.map((item: any) => (
+            <div
+              key={item.question_id}
+              className="search-result"
+            >
+              {item.title}
+            </div>
+          ))}
+        </div>
+      )}
       <button onClick={handleLogout}>Logout</button>
       <button onClick={() => setAddQuestionModal(prev => !prev)}> add question</button>
       {  addQuestionModal && 
@@ -663,7 +704,6 @@ export default function Dashboard(){
                       :
                       <p> no answers yet. </p>
                     }
-
                     <form onSubmit={handleAddAnswer} className="add-answer-form">
                       <textarea 
                         value={newAnswerContent} 
@@ -673,7 +713,6 @@ export default function Dashboard(){
                       />
                       <button type="submit">Post Answer</button>
                     </form>
-
                     </div>
                   </div>
               </div>
