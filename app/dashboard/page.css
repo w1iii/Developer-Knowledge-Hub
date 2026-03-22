@@ -125,23 +125,31 @@
 
 }
 
+.tags-selection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+.tags-selection button {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 16px;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+.tags-selection button.selected {
+  background: #3730a3;
+  color: white;
+  border-color: #3730a3;
+}
+/* Tag badges */
 .tag-badge {
   background: #e0e7ff;
   color: #3730a3;
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 12px;
-  margin-right: 0.5rem;
-}
-.tags-selection button {
-  margin: 4px;
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-radius: 16px;
-  cursor: pointer;
-}
-.tags-selection button.selected {
-  background: #3730a3;
-  color: white;
-  border-color: #3730a3;
+  margin-right: 4px;
 }

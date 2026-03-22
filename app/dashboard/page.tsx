@@ -526,6 +526,20 @@ export default function Dashboard(){
             <form onSubmit={handleAdd}>
             <input type="text" value={newTitle} onChange={(e) => setnewTitle(e.target.value)} placeholder="title" />
             <input type="text" value={newDescription} onChange={(e) => setnewDescription(e.target.value)} placeholder="Description" />
+
+          <div className="tags-selection">
+            <p>Select Tags:</p>
+            {availableTags.map(tag => (
+              <button
+                key={tag.tag_id}
+                type="button"
+                className={selectedTagIds.includes(tag.tag_id) ? 'selected' : ''}
+                onClick={() => toggleTag(tag.tag_id)}
+              >
+                {tag.tag_name}
+              </button>
+            ))}
+            </div>
             <button> Submit </button>
             </form>
         </div>
