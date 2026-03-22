@@ -14,6 +14,12 @@ interface Question {
   upvote_count: number
   downvote_count: number
   user_vote: 'upvote' | 'downvote' | null
+  tags: Tag[]
+}
+
+interface Tag{
+  tag_id: number
+  tag_name: string
 }
 
 type VoteType = 'upvote' | 'downvote';
@@ -47,7 +53,10 @@ export default function Dashboard(){
   const [editingAnswerId, setEditingAnswerId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState('');
   const [newAnswerContent, setNewAnswerContent] = useState('');
+  const [availableTags, setAvailableTags] = useState<Tag[]>([])
+  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([])
 
+  console.log("Available Tags: ", availableTags)
 
   const router = useRouter()
   
@@ -80,6 +89,15 @@ export default function Dashboard(){
       setQuestions(data)
     }
     loadQuestions()
+  }, [])
+
+  useEffect(() => {
+    async function loadTags() {
+      const res = await fetch("/api/tagControllers/viewTags")
+      const data = await res.json()
+      setAvailableTags(data)
+    }
+    loadTags()
   }, [])
 
   const loadQuestions = async () => {
@@ -120,13 +138,15 @@ export default function Dashboard(){
         credentials: 'include',
         body: JSON.stringify({
           title: newTitle,
-          description: newDescription
+          description: newDescription,
+          tag_ids: selectedTagIds
         })
       })
       if(res.ok){
         setnewTitle('')
         setnewDescription('')
         setAddQuestionModal(false)
+        setSelectedTagIds([])
         loadQuestions()
       }else{
         alert('Failed to add: ' + (await res.json()).error)
@@ -146,6 +166,14 @@ export default function Dashboard(){
       setnewTitle('')
       setnewDescription('')
     }
+  }
+
+  const toggleTag = (tagId: number) => {
+    setSelectedTagIds(prev => 
+      prev.includes(tagId) 
+        ? prev.filter(id => id !== tagId)
+        : [...prev, tagId]
+    )
   }
 
   const handleSave = async () => {
@@ -531,7 +559,14 @@ export default function Dashboard(){
                 <p>{q.description}</p>
               </div>
               <div className="question-container-bottom">
-                <p> Tags: Next.js Typescript</p>
+                <div className="tags-display">
+                  <p> Tags: 
+                  {q.tags && q.tags.map(tag => (
+                    <span key={tag.tag_id} className="tag-badge">
+                      {tag.tag_name}
+                    </span>
+                  ))} </p>
+                </div>
                 <div className="question-container-actions">
                   <p> Answers: 0 </p>
                 </div>
@@ -558,7 +593,11 @@ export default function Dashboard(){
                     <p>{q.description}</p>
                   </div>
                   <div className="question-container-bottom">
-                    <p> Tags: Next.js Typescript</p>
+                     <p> Tags: {
+                      q.tags?.map(tag => (
+                        <span key={tag.tag_id} className="tag-badge-small">{tag.tag_name}</span>
+                      ))
+                     } </p>
                     <div className="question-container-actions">
                       <h2> Answers </h2>
                     </div>

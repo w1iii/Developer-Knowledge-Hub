@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     }
 
     try{
-          const query = `
+           const query = `
               SELECT 
                  q.question_id,
                  q.user_id,
@@ -30,7 +30,14 @@ export async function GET(request: NextRequest) {
                      (SELECT vote_type FROM votes 
                       WHERE user_id = $1 AND question_id = q.question_id),
                      NULL
-                 ) as user_vote
+                 ) as user_vote,
+                 COALESCE(
+                     (SELECT json_agg(json_build_object('tag_id', t.tag_id, 'tag_name', t.tag_name))
+                      FROM question_tags qt
+                      JOIN tags t ON qt.tag_id = t.tag_id
+                      WHERE qt.question_id = q.question_id),
+                     '[]'
+                 ) as tags
              FROM questions q
             LEFT JOIN users u
                 ON q.user_id = u.user_id

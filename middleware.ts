@@ -22,7 +22,7 @@ export default async function middleware(request: NextRequest) {
     }
   }
 
-  if (pathname.startsWith('/api/postControllers') || pathname.startsWith('/api/commentControllers') || pathname === '/api/authControllers/me' || pathname.startsWith('/api/voteControllers') ) {
+  if (pathname.startsWith('/api/postControllers') || pathname.startsWith('/api/commentControllers') ||pathname.startsWith('/api/tagControllers')  || pathname === '/api/authControllers/me' || pathname.startsWith('/api/voteControllers') ) {
 
     // const authHeader = request.headers.get('authorization')
     // const token = authHeader?.split(' ')[1]

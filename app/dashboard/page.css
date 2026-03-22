@@ -119,3 +119,29 @@
      font-size: 0.75rem;
      padding: 0.125rem 0.375rem;
  }
+
+.tags-display {
+    background-color: blue;
+
+}
+
+.tag-badge {
+  background: #e0e7ff;
+  color: #3730a3;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-right: 0.5rem;
+}
+.tags-selection button {
+  margin: 4px;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 16px;
+  cursor: pointer;
+}
+.tags-selection button.selected {
+  background: #3730a3;
+  color: white;
+  border-color: #3730a3;
+}

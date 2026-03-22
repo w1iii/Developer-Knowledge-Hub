@@ -14,16 +14,23 @@ export async function POST(request: NextRequest) {
         }, { status: 401 });
     }
     const body = await request.json();
-    const { title, description } = body;
+    const { title, description, tag_ids } = body;
 
     console.log("============ SERVER DATA ================")
-    console.log("Title: ", title, "Description: ", description)
+    console.log("Title: ", title, "Description: ", description, "Tags: ", tag_ids)
     try{
         const insertQuery = `
-            INSERT INTO questions (user_id, title, description) 
-            VALUES ($1,$2, $3)
-            RETURNING question_id, user_id, title, description;`;
-        const result = await pool.query(insertQuery, [user_id, title, description])
+            WITH new_question AS (
+                INSERT INTO questions (user_id, title, description) 
+                VALUES ($1, $2, $3)
+                RETURNING question_id
+            )
+            INSERT INTO question_tags (question_id, tag_id)
+            SELECT new_question.question_id, unnest($4::int[])
+            FROM new_question
+            RETURNING question_id;
+        `;
+        const result = await pool.query(insertQuery, [user_id, title, description, tag_ids || []]);
         console.log(result.rows[0])
         return NextResponse.json({ 
             message: 'Question added successfully',
