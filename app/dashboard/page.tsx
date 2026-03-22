@@ -64,6 +64,7 @@ export default function Dashboard(){
   useEffect(() =>{
     if(!searchQuery || searchQuery.length < 3){
       setSearchResult([])
+      return
     }
     try{
       const delay = setTimeout(async() =>{
@@ -76,7 +77,8 @@ export default function Dashboard(){
           })
         })
         const data = await res.json()
-        setSearchResult(data)
+        setSearchResult(data.searchResult)
+        console.log("search result data: ", searchResult)
       }, 250)
       return () => clearTimeout(delay)
     }catch{
@@ -547,19 +549,21 @@ export default function Dashboard(){
   return(
     <>
       <h1> Dashboard </h1>
-      <input type='text' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder='search' />
-      {searchResult.length > 0 && (
-        <div className="search-result-container">
-          {searchResult.map((item: any) => (
-            <div
-              key={item.question_id}
-              className="search-result"
-            >
-              {item.title}
-            </div>
-          ))}
-        </div>
-      )}
+      <div className='searchbar-section'>
+        <input type='text' className='search-input' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder='search' />
+        {searchResult.length > 0 && (
+          <div className="search-result-container">
+            {searchResult.map((item: any) => (
+              <div
+                key={item.question_id}
+                className="search-result"
+              >
+                {item.title}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
       <button onClick={handleLogout}>Logout</button>
       <button onClick={() => setAddQuestionModal(prev => !prev)}> add question</button>
       {  addQuestionModal && 
