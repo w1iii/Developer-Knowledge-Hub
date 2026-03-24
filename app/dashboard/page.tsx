@@ -81,6 +81,8 @@ export default function Dashboard() {
   const router = useRouter()
 
   useEffect(() => {
+    router.refresh()
+    
     async function loadUser() {
       try {
         const res = await fetch("/api/authControllers/me", { credentials: "include" })
@@ -237,36 +239,8 @@ export default function Dashboard() {
     }
   }
 
-  const viewQuestion = async (question: Question) => {
-    const isClosing = viewQuestionId === question.question_id
-    setViewQuestionId(isClosing ? null : question.question_id)
-    setCurrentViewingQuestionId(isClosing ? null : question.question_id)
-
-    const viewedKey = 'viewedQuestions'
-    const viewed: number[] = JSON.parse(sessionStorage.getItem(viewedKey) || '[]')
-
-    if (!isClosing && !viewed.includes(question.question_id)) {
-      const newViewed = [...viewed, question.question_id]
-      sessionStorage.setItem(viewedKey, JSON.stringify(newViewed))
-      try {
-        const res = await fetch('/api/postControllers/viewSingleQuestion', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ question_id: question.question_id })
-        })
-        const data = await res.json()
-        setQuestions(prev => prev.map(q =>
-          q.question_id === question.question_id ? { ...q, views: data.views } : q
-        ))
-      } catch (e) {
-        console.log("Error adding view", e)
-      }
-    }
-
-    if (!isClosing) {
-      await loadAnswers(question.question_id)
-    }
+  const viewQuestion = (question: Question) => {
+    router.push(`/dashboard/viewSingleQuestion/${question.question_id}`)
   }
 
   const handleEditAnswer = async (answerId: number) => {
@@ -583,103 +557,18 @@ export default function Dashboard() {
                 <span className="answers-count">Answers: <strong>0</strong></span>
               </div>
 
-              {selectedQuestionId === q.question_id && (
-                <div className="inline-edit-section">
-                  <input className="modal-input" type="text" value={newTitle} onChange={e => setnewTitle(e.target.value)} />
-                  <input className="modal-input" type="text" value={newDescription} onChange={e => setnewDescription(e.target.value)} />
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <button className="btn-primary" onClick={handleSave}>Save</button>
-                    <button className="btn-secondary" onClick={() => setSelectedQuestionId(null)}>Cancel</button>
-                  </div>
-                </div>
-              )}
-
-              {viewQuestionId === q.question_id && (
-                <div className="expanded-view">
-                  {q.user_id === currentUserId && (
-                    <div className="expanded-actions">
-                      <button className="btn-edit" onClick={() => showModal(q)}>Edit</button>
-                      <button className="btn-delete" onClick={() => handleDelete(q)}>Delete</button>
-                    </div>
-                  )}
-
-                  <h2 className="expanded-title">{q.title}</h2>
-                  <p className="expanded-desc">{q.description}</p>
-
-                  <div className="tags-row" style={{ marginBottom: 8 }}>
-                    {q.tags?.map(tag => (
-                      <span key={tag.tag_id} className="tag-badge">{tag.tag_name}</span>
-                    ))}
-                  </div>
-
-                  <h3 className="section-heading">Answers</h3>
-
-                  {answers.length > 0 ? (
-                    <ul className="answers-list">
-                      {answers.map((a: Answers) => (
-                        <li key={a.answer_id} className="answer-item">
-                          <div className="answer-vote-col">
-                            <button
-                              className={`answer-vote-btn ${a.user_vote === 'upvote' ? 'active-up' : ''}`}
-                              onClick={() => toggleAnswerVote(a, 'upvote')}
-                            >▲</button>
-                            <span className="answer-vote-count">{a.upvote_count}</span>
-                            <button
-                              className={`answer-vote-btn ${a.user_vote === 'downvote' ? 'active-down' : ''}`}
-                              onClick={() => toggleAnswerVote(a, 'downvote')}
-                            >▼</button>
-                            <span className="answer-vote-count">{a.downvote_count}</span>
-                          </div>
-
-                          <div className="answer-body">
-                            {editingAnswerId === a.answer_id ? (
-                              <>
-                                <textarea
-                                  className="answer-textarea"
-                                  value={editContent}
-                                  onChange={e => setEditContent(e.target.value)}
-                                  rows={3}
-                                />
-                                <div className="answer-edit-actions">
-                                  <button className="btn-primary" style={{ padding: '6px 16px', fontSize: 13 }} onClick={() => handleEditAnswer(a.answer_id)}>Save</button>
-                                  <button className="btn-secondary" style={{ padding: '6px 14px', fontSize: 13 }} onClick={() => setEditingAnswerId(null)}>Cancel</button>
-                                </div>
-                              </>
-                            ) : (
-                              <>
-                                <p className="answer-content">{a.content}</p>
-                                {a.user_id === currentUserId && (
-                                  <div className="answer-edit-actions">
-                                    <button className="btn-edit" style={{ padding: '5px 14px', fontSize: 12 }} onClick={() => { setEditingAnswerId(a.answer_id); setEditContent(a.content) }}>Edit</button>
-                                    <button className="btn-delete" style={{ padding: '5px 14px', fontSize: 12 }} onClick={() => handleDeleteAnswer(a.answer_id)}>Delete</button>
-                                  </div>
-                                )}
-                              </>
-                            )}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="no-answers">No answers yet. Be the first to answer!</p>
-                  )}
-
-                  <form className="add-answer-form" onSubmit={handleAddAnswer}>
-                    <span className="add-answer-label">Your Answer</span>
-                    <textarea
-                      className="answer-textarea"
-                      value={newAnswerContent}
-                      onChange={e => setNewAnswerContent(e.target.value)}
-                      placeholder="Write your answer here..."
-                      rows={4}
-                      style={{ marginBottom: 0 }}
-                    />
-                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                      <button type="submit" className="btn-primary">Post Answer</button>
-                    </div>
-                  </form>
-                </div>
-              )}
+              {
+              //   selectedQuestionId === q.question_id && (
+              //   <div className="inline-edit-section">
+              //     <input className="modal-input" type="text" value={newTitle} onChange={e => setnewTitle(e.target.value)} />
+              //     <input className="modal-input" type="text" value={newDescription} onChange={e => setnewDescription(e.target.value)} />
+              //     <div style={{ display: 'flex', gap: 8 }}>
+              //       <button className="btn-primary" onClick={handleSave}>Save</button>
+              //       <button className="btn-secondary" onClick={() => setSelectedQuestionId(null)}>Cancel</button>
+              //     </div>
+              //   </div>
+              // )
+              }
             </div>
           ))}
         </div>

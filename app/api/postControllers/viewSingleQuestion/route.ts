@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     const { question_id } = body
 
     try{
-        const query = `
+        const incrementQuery = `
             UPDATE 
             questions 
             SET 
@@ -26,11 +26,47 @@ export async function POST(request: NextRequest) {
             WHERE 
             question_id = $1
             RETURNING views
-;`
-        const result = await pool.query(query, [question_id])
-        return NextResponse.json({
-            views: result.rows[0].views
-        })
+        `;
+        await pool.query(incrementQuery, [question_id]);
+
+        const query = `
+            SELECT 
+                q.question_id,
+                q.user_id,
+                u.username,
+                q.title,
+                q.description,
+                q.upvote_count,
+                q.downvote_count,
+                q.views,
+                COALESCE(
+                    (SELECT vote_type FROM votes 
+                     WHERE user_id = $1 AND question_id = q.question_id),
+                    NULL
+                ) as user_vote,
+                COALESCE(
+                    (SELECT json_agg(json_build_object('tag_id', t.tag_id, 'tag_name', t.tag_name))
+                     FROM question_tags qt
+                     JOIN tags t ON qt.tag_id = t.tag_id
+                     WHERE qt.question_id = q.question_id),
+                    '[]'
+                ) as tags
+            FROM questions q
+            LEFT JOIN users u
+                ON q.user_id = u.user_id
+            WHERE q.question_id = $2
+        `;
+
+        const result = await pool.query(query, [user_id, question_id]);
+        
+        if (result.rows.length === 0) {
+            return NextResponse.json({ 
+                error: 'Question not found',
+            }, { status: 404 });
+        }
+
+        return NextResponse.json(result.rows[0]);
+
     }catch(e){
         console.log(e)
         return NextResponse.json(
@@ -40,4 +76,3 @@ export async function POST(request: NextRequest) {
     }
 
 }
-
