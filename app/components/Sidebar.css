@@ -1,0 +1,84 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+  --sb-sidebar-bg: #404942;
+  --sb-navbar-bg: #404942;
+  --sb-font-title: 'Libre Caslon Text', Georgia, serif;
+  --sb-font-body: 'Basis Grotesque Arabic Pro', 'Helvetica Neue', Arial, sans-serif;
+  --sb-accent: #4A7C59;
+}
+
+.db-sidebar {
+  position: fixed; top: 64px; left: 0; bottom: 0; width: 240px;
+  background: var(--db-sidebar-bg);
+  display: flex; flex-direction: column;
+  padding: 28px 0;
+  border-right: 1px solid rgba(255,255,255,0.07);
+  overflow-y: auto;
+}
+
+.db-user-section {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0 20px 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  gap: 12px;
+}
+
+.db-avatar {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--db-font-title);
+  font-size: 24px; font-weight: 700;
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.2);
+}
+
+.db-username-label {
+  color: #fff;
+  font-family: var(--db-font-title);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.db-btn-logout {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  padding: 6px 18px;
+  color: rgba(255,255,255,0.7);
+  font-family: var(--db-font-body);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.db-btn-logout:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+.db-nav-section {
+  padding: 20px 0;
+  flex: 1;
+}
+
+.db-nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 24px;
+  color: rgba(255,255,255,0.65);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  border-left: 3px solid transparent;
+  text-decoration: none;
+}
+.db-nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+.db-nav-item.active { color: #fff; border-left-color: var(--db-accent); background: rgba(255,255,255,0.06); }
+
+.db-nav-item-icon { font-size: 16px; width: 20px; text-align: center; }
+
+.db-nav-divider {
+  height: 1px; background: rgba(255,255,255,0.1);
+  margin: 12px 20px;
+}
+
+

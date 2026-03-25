@@ -2,6 +2,8 @@
 
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import Navbar from '../components/Navbar'
+import Sidebar from '../components/Sidebar'
 import './page.css'
 
 interface Question {
@@ -409,91 +411,98 @@ export default function Dashboard() {
 
   return (
     <>
-      <nav className="navbar">
-        <span className="navbar-brand">&lt;<span>DevTalk</span>/&gt;</span>
+      {
+        // <nav className="db-navbar">
+        //   <span className="db-navbar-brand">&lt;<span>DevTalk</span>/&gt;</span>
+        //
+        //   <div className="db-search-wrapper">
+        //     <span className="db-search-icon">🔍</span>
+        //     <input
+        //       type="text"
+        //       className="db-search-input"
+        //       value={searchQuery}
+        //       onChange={e => setSearchQuery(e.target.value)}
+        //       placeholder="search..."
+        //     />
+        //     {searchResult.length > 0 && (
+        //       <div className="db-search-results-dropdown">
+        //         {searchResult.map((item: any) => (
+        //           <div key={item.question_id} className="db-search-result-item">{item.title}</div>
+        //         ))}
+        //       </div>
+        //     )}
+        //   </div>
+        //
+        //   <div className="db-navbar-actions">
+        //     <button className="db-btn-create" onClick={() => setAddQuestionModal(true)}>
+        //       <span style={{ fontSize: 18, lineHeight: 1 }}>＋</span> Create
+        //     </button>
+        //   </div>
+        // </nav>
+      }
+      < Navbar />
+      < Sidebar />
 
-        <div className="search-wrapper">
-          <span className="search-icon">🔍</span>
-          <input
-            type="text"
-            className="search-input"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            placeholder="search..."
-          />
-          {searchResult.length > 0 && (
-            <div className="search-results-dropdown">
-              {searchResult.map((item: any) => (
-                <div key={item.question_id} className="search-result-item">{item.title}</div>
-              ))}
-            </div>
-          )}
-        </div>
 
-        <div className="navbar-actions">
-          <button className="btn-create" onClick={() => setAddQuestionModal(true)}>
-            <span style={{ fontSize: 18, lineHeight: 1 }}>＋</span> Create
-          </button>
-        </div>
-      </nav>
-
-      <aside className="sidebar">
-        <div className="user-section">
-          <div className="avatar">{getInitials('Lui')}</div>
-          <span className="username-label">Lui</span>
-          <button className="btn-logout" onClick={handleLogout}>Logout</button>
-        </div>
-
-        <nav className="nav-section">
-          <a className="nav-item active">
-            <span className="nav-item-icon">🏠</span> Home
-          </a>
-          <a className="nav-item">
-            <span className="nav-item-icon">🔥</span> Trending
-          </a>
-          <a className="nav-item">
-            <span className="nav-item-icon">📰</span> Latest News
-          </a>
-          <a className="nav-item">
-            <span className="nav-item-icon">🏆</span> Leaderboards
-          </a>
-          <a className="nav-item">
-            <span className="nav-item-icon">🌐</span> Communities
-          </a>
-          <div className="nav-divider" />
-          <a className="nav-item">
-            <span className="nav-item-icon">⚙️</span> Settings
-          </a>
-        </nav>
-      </aside>
+      {
+      //   <aside className="db-sidebar">
+      //   <div className="db-user-section">
+      //     <div className="db-avatar">{getInitials('Lui')}</div>
+      //     <span className="db-username-label">Lui</span>
+      //     <button className="db-btn-logout" onClick={handleLogout}>Logout</button>
+      //   </div>
+      //
+      //   <nav className="db-nav-section">
+      //     <a className="db-nav-item active">
+      //       <span className="db-nav-item-icon">🏠</span> Home
+      //     </a>
+      //     <a className="db-nav-item">
+      //       <span className="db-nav-item-icon">🔥</span> Trending
+      //     </a>
+      //     <a className="db-nav-item">
+      //       <span className="db-nav-item-icon">📰</span> Latest News
+      //     </a>
+      //     <a className="db-nav-item">
+      //       <span className="db-nav-item-icon">🏆</span> Leaderboards
+      //     </a>
+      //     <a className="db-nav-item">
+      //       <span className="db-nav-item-icon">🌐</span> Communities
+      //     </a>
+      //     <div className="db-nav-divider" />
+      //     <a className="db-nav-item">
+      //       <span className="db-nav-item-icon">⚙️</span> Settings
+      //     </a>
+      //   </nav>
+      // </aside>
+      }
 
       {addQuestionModal && (
-        <div className="modal-overlay" onClick={() => setAddQuestionModal(false)}>
-          <div className="modal-card" onClick={e => e.stopPropagation()}>
-            <h2 className="modal-title">Ask a Question</h2>
+        <div className="db-modal-overlay" onClick={() => setAddQuestionModal(false)}>
+          <div className="db-modal-card" onClick={e => e.stopPropagation()}>
+            <h2 className="db-modal-title">Ask a Question</h2>
             <form onSubmit={handleAdd} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <input
-                className="modal-input"
+                className="db-modal-input"
                 type="text"
                 value={newTitle}
                 onChange={e => setnewTitle(e.target.value)}
                 placeholder="Question title..."
               />
               <input
-                className="modal-input"
+                className="db-modal-input"
                 type="text"
                 value={newDescription}
                 onChange={e => setnewDescription(e.target.value)}
                 placeholder="Describe your question..."
               />
               <div>
-                <p className="tags-label" style={{ marginBottom: 10 }}>Tags</p>
-                <div className="tags-grid">
+                <p className="db-tags-label" style={{ marginBottom: 10 }}>Tags</p>
+                <div className="db-tags-grid">
                   {availableTags.map(tag => (
                     <button
                       key={tag.tag_id}
                       type="button"
-                      className={`tag-toggle ${selectedTagIds.includes(tag.tag_id) ? 'selected' : ''}`}
+                      className={`db-tag-toggle ${selectedTagIds.includes(tag.tag_id) ? 'selected' : ''}`}
                       onClick={() => toggleTag(tag.tag_id)}
                     >
                       {tag.tag_name}
@@ -501,41 +510,35 @@ export default function Dashboard() {
                   ))}
                 </div>
               </div>
-              <div className="modal-actions">
-                <button type="button" className="btn-secondary" onClick={() => setAddQuestionModal(false)}>Cancel</button>
-                <button type="submit" className="btn-primary">Post Question</button>
+              <div className="db-modal-actions">
+                <button type="button" className="db-btn-secondary" onClick={() => setAddQuestionModal(false)}>Cancel</button>
+                <button type="submit" className="db-btn-primary">Post Question</button>
               </div>
             </form>
           </div>
         </div>
       )}
 
-      <main className="main-content">
-        {
-          // <div className="page-header">
-          //   <h1 className="page-title">All Questions</h1>
-          // </div>
-        }
-
-        <div className="questions-list">
+      <main className="db-main-content">
+        <div className="db-questions-list">
           {questions.map((q: Question) => (
-            <div className="question-card" key={q.question_id}>
+            <div className="db-question-card" key={q.question_id}>
 
-              <div className="question-card-meta">
-                <div className="user-pill">
-                  <div className="avatar-sm">{getInitials(q.username)}</div>
-                  <span className="user-name">{q.username}</span>
+              <div className="db-question-card-meta">
+                <div className="db-user-pill">
+                  <div className="db-avatar-sm">{getInitials(q.username)}</div>
+                  <span className="db-user-name">{q.username}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div className="vote-cluster">
+                  <div className="db-vote-cluster">
                     <button
-                      className={`vote-btn ${q.user_vote === 'upvote' ? 'active-up' : ''}`}
+                      className={`db-vote-btn ${q.user_vote === 'upvote' ? 'active-up' : ''}`}
                       onClick={() => toggleVote(q, 'upvote')}
                     >
                       ▲ {q.upvote_count}
                     </button>
                     <button
-                      className={`vote-btn ${q.user_vote === 'downvote' ? 'active-down' : ''}`}
+                      className={`db-vote-btn ${q.user_vote === 'downvote' ? 'active-down' : ''}`}
                       onClick={() => toggleVote(q, 'downvote')}
                     >
                       ▼ {q.downvote_count}
@@ -544,32 +547,19 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="question-card-body" onClick={() => viewQuestion(q)}>
-                <h2 className="question-card-title">{q.title}</h2>
-                <p className="question-card-desc">{q.description}</p>
+              <div className="db-question-card-body" onClick={() => viewQuestion(q)}>
+                <h2 className="db-question-card-title">{q.title}</h2>
+                <p className="db-question-card-desc">{q.description}</p>
               </div>
 
-              <div className="question-card-footer">
-                <div className="tags-row">
+              <div className="db-question-card-footer">
+                <div className="db-tags-row">
                   {q.tags?.map(tag => (
-                    <span key={tag.tag_id} className="tag-badge">{tag.tag_name}</span>
+                    <span key={tag.tag_id} className="db-tag-badge">{tag.tag_name}</span>
                   ))}
                 </div>
-                <span className="answers-count"><img src="/view.png" width='10' alt="view" /> {q.views} Answers: <strong>0</strong></span>
+                <span className="db-answers-count"><img src="/view.png" width='10' alt="view" /> {q.views} Answers: <strong>0</strong></span>
               </div>
-
-              {
-              //   selectedQuestionId === q.question_id && (
-              //   <div className="inline-edit-section">
-              //     <input className="modal-input" type="text" value={newTitle} onChange={e => setnewTitle(e.target.value)} />
-              //     <input className="modal-input" type="text" value={newDescription} onChange={e => setnewDescription(e.target.value)} />
-              //     <div style={{ display: 'flex', gap: 8 }}>
-              //       <button className="btn-primary" onClick={handleSave}>Save</button>
-              //       <button className="btn-secondary" onClick={() => setSelectedQuestionId(null)}>Cancel</button>
-              //     </div>
-              //   </div>
-              // )
-              }
             </div>
           ))}
         </div>

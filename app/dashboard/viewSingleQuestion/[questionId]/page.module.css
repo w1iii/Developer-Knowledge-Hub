@@ -1,0 +1,407 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+  --vsq-sidebar-bg: #404942;
+  --vsq-navbar-bg: #404942;
+  --vsq-card-bg: #D9D9D9;
+  --vsq-vote-color: #6F6A61;
+  --vsq-vote-active-up: #4CAF78;
+  --vsq-vote-active-down: #E05C5C;
+  --vsq-body-bg: #C1B09D;
+  --vsq-text-dark: #1a1a1a;
+  --vsq-text-muted: #555;
+  --vsq-accent: #4A7C59;
+  --vsq-border-radius: 14px;
+  --vsq-font-title: 'Libre Caslon Text', Georgia, serif;
+  --vsq-font-body: 'Basis Grotesque Arabic Pro', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.mainContent {
+  margin-left: 240px;
+  margin-top: 64px;
+  min-height: calc(100vh - 64px);
+  padding: 32px 36px;
+  background: var(--vsq-body-bg);
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--vsq-font-body);
+  font-size: 16px;
+  color: var(--vsq-text-muted);
+  padding: 48px;
+}
+
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 48px;
+  text-align: center;
+}
+
+.errorState h2 {
+  font-family: var(--vsq-font-title);
+  font-size: 20px;
+  color: var(--vsq-text-muted);
+}
+
+.backLink {
+  margin-bottom: 24px;
+}
+
+.questionDetailCard {
+  background: var(--vsq-card-bg);
+  border-radius: var(--vsq-border-radius);
+  padding: 28px;
+}
+
+.questionActions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding-top: 14px;
+}
+
+.questionDetailTitle {
+  font-family: var(--vsq-font-title);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--vsq-text-dark);
+  margin-bottom: 16px;
+  line-height: 1.3;
+}
+
+.questionDetailDesc {
+  font-family: var(--vsq-font-body);
+  font-size: 16px;
+  line-height: 1.75;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.questionCardMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px 0;
+}
+
+.userPill {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.avatarSm {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--vsq-sidebar-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--vsq-font-title);
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.userName {
+  font-family: var(--vsq-font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--vsq-text-dark);
+}
+
+.viewsBadge {
+  font-family: var(--vsq-font-body);
+  font-size: 12px;
+  color: var(--vsq-text-muted);
+  margin-left: 6px;
+}
+
+.voteCluster {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.voteBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--vsq-vote-color);
+  border: none;
+  border-radius: 7px;
+  padding: 5px 12px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--vsq-font-body);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.voteBtn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+.voteBtn:active { transform: translateY(0); }
+
+.activeUp { background: var(--vsq-vote-active-up); }
+.activeDown { background: var(--vsq-vote-active-down); }
+
+.questionCardBody {
+  padding: 16px 20px;
+}
+
+.questionCardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px 16px;
+}
+
+.tagsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tagBadge {
+  background: rgba(64,73,66,0.12);
+  border-radius: 100px;
+  padding: 3px 11px;
+  font-family: var(--vsq-font-body);
+  font-size: 12px;
+  color: var(--vsq-sidebar-bg);
+  font-weight: 500;
+}
+
+.answersSection {
+  display: flex;
+  margin-left: 1rem;
+}
+
+.headingContainer {
+  width: 95%;
+  border-top: 2px solid rgba(0,0,0,0.1);
+}
+
+.sectionHeading {
+  font-family: var(--vsq-font-title);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--vsq-text-dark);
+  margin: 20px 0 14px;
+  padding-bottom: 8px;
+}
+
+.answersList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+  list-style: none;
+  width: 100%;
+}
+
+.answerItem {
+  background: #fff;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.answerVoteCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 48px;
+}
+
+.answerVoteBtn {
+  background: var(--vsq-vote-color);
+  border: none;
+  border-radius: 6px;
+  width: 32px;
+  height: 28px;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.answerVoteBtn:hover { filter: brightness(1.15); }
+
+.answerVoteCount {
+  font-family: var(--vsq-font-body);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--vsq-text-muted);
+}
+
+.answerBody {
+  flex: 1;
+}
+
+.answerContent {
+  font-family: var(--vsq-font-body);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--vsq-text-dark);
+  margin-bottom: 10px;
+}
+
+.answerEditActions {
+  display: flex;
+  gap: 8px;
+}
+
+.answerTextarea {
+  width: 100%;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: var(--vsq-font-body);
+  font-size: 14px;
+  resize: vertical;
+  outline: none;
+  margin-bottom: 8px;
+}
+.answerTextarea:focus { border-color: var(--vsq-accent); }
+
+.addAnswerForm {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.addAnswerLabel {
+  font-family: var(--vsq-font-title);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--vsq-text-dark);
+}
+
+.noAnswers {
+  font-family: var(--vsq-font-body);
+  font-size: 14px;
+  color: var(--vsq-text-muted);
+  font-style: italic;
+  padding: 12px 0;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.modalCard {
+  background: #fff;
+  border-radius: 16px;
+  padding: 36px;
+  width: 100%;
+  max-width: 560px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.modalTitle {
+  font-family: var(--vsq-font-title);
+  font-size: 22px;
+  color: var(--vsq-text-dark);
+  font-weight: 700;
+}
+
+.modalInput {
+  width: 100%;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 11px 14px;
+  font-family: var(--vsq-font-body);
+  font-size: 14px;
+  color: var(--vsq-text-dark);
+  outline: none;
+  transition: border 0.2s;
+}
+.modalInput:focus { border-color: var(--vsq-accent); }
+
+.modalActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btnPrimary {
+  background: var(--vsq-accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-family: var(--vsq-font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btnPrimary:hover { background: #3a6347; }
+
+.btnSecondary {
+  background: transparent;
+  color: var(--vsq-text-muted);
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-family: var(--vsq-font-body);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.btnSecondary:hover { border-color: var(--vsq-text-muted); color: var(--vsq-text-dark); }
+
+.btnEdit {
+  background: transparent;
+  border: 1.5px solid var(--vsq-accent);
+  color: var(--vsq-accent);
+  border-radius: 7px;
+  padding: 7px 16px;
+  font-family: var(--vsq-font-body);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btnEdit:hover { background: var(--vsq-accent); color: #fff; }
+
+.btnDelete {
+  background: transparent;
+  border: 1.5px solid #E05C5C;
+  color: #E05C5C;
+  border-radius: 7px;
+  padding: 7px 16px;
+  font-family: var(--vsq-font-body);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btnDelete:hover { background: #E05C5C; color: #fff; }

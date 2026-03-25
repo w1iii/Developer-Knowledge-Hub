@@ -1,11 +1,11 @@
-
 "use client"
 
 import { useRouter, useParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { Sidebar } from '../../../components/Sidebar'
+import Sidebar from '../../../components/Sidebar'
+import Navbar from '../../../components/Navbar'
 import Link from 'next/link'
-import './page.css'
+import styles from './page.module.css'
 
 interface Question {
   question_id: number
@@ -343,9 +343,7 @@ export default function ViewSingleQuestionPage() {
     return (
       <>
         <Sidebar />
-        <main className="main-content">
-          <div className="loading">Loading...</div>
-        </main>
+        <Navbar />
       </>
     )
   }
@@ -354,10 +352,11 @@ export default function ViewSingleQuestionPage() {
     return (
       <>
         <Sidebar />
-        <main className="main-content">
-          <div className="error-state">
+        <Navbar />
+        <main className={styles.mainContent}>
+          <div className={styles.errorState}>
             <h2>{error || 'Question not found'}</h2>
-            <Link href="/dashboard" className="btn-primary">Back to Dashboard</Link>
+            <Link href="/dashboard" className={styles.btnPrimary}>Back to Dashboard</Link>
           </div>
         </main>
       </>
@@ -367,57 +366,58 @@ export default function ViewSingleQuestionPage() {
   return (
     <>
       <Sidebar />
+      <Navbar />
       
       {showEditModal && (
-        <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
-          <div className="modal-card" onClick={e => e.stopPropagation()}>
-            <h2 className="modal-title">Edit Question</h2>
+        <div className={styles.modalOverlay} onClick={() => setShowEditModal(false)}>
+          <div className={styles.modalCard} onClick={e => e.stopPropagation()}>
+            <h2 className={styles.modalTitle}>Edit Question</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <input
-                className="modal-input"
+                className={styles.modalInput}
                 type="text"
                 value={editTitle}
                 onChange={e => setEditTitle(e.target.value)}
                 placeholder="Question title..."
               />
               <input
-                className="modal-input"
+                className={styles.modalInput}
                 type="text"
                 value={editDescription}
                 onChange={e => setEditDescription(e.target.value)}
                 placeholder="Describe your question..."
               />
-              <div className="modal-actions">
-                <button type="button" className="btn-secondary" onClick={() => setShowEditModal(false)}>Cancel</button>
-                <button type="button" className="btn-primary" onClick={handleSaveEdit}>Save</button>
+              <div className={styles.modalActions}>
+                <button type="button" className={styles.btnSecondary} onClick={() => setShowEditModal(false)}>Cancel</button>
+                <button type="button" className={styles.btnPrimary} onClick={handleSaveEdit}>Save</button>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      <main className="main-content">
-        <div className="back-link">
-          <Link href="/dashboard" className="btn-secondary">← Back to Questions</Link>
+      <main className={styles.mainContent}>
+        <div className={styles.backLink}>
+          <Link href="/dashboard" className={styles.btnSecondary}>← Back to Questions</Link>
         </div>
 
-        <div className="question-detail-card">
-          <div className="question-card-meta">
-            <div className="user-pill">
-              <div className="avatar-sm">{getInitials(question.username)}</div>
-              <span className="user-name">{question.username}</span>
+        <div className={styles.questionDetailCard}>
+          <div className={styles.questionCardMeta}>
+            <div className={styles.userPill}>
+              <div className={styles.avatarSm}>{getInitials(question.username)}</div>
+              <span className={styles.userName}>{question.username}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span className="views-badge">👁 {question.views}</span>
-              <div className="vote-cluster">
+              <span className={styles.viewsBadge}>👁 {question.views}</span>
+              <div className={styles.voteCluster}>
                 <button
-                  className={`vote-btn ${question.user_vote === 'upvote' ? 'active-up' : ''}`}
+                  className={`${styles.voteBtn} ${question.user_vote === 'upvote' ? styles.activeUp : ''}`}
                   onClick={() => toggleVote('upvote')}
                 >
                   ▲ {question.upvote_count}
                 </button>
                 <button
-                  className={`vote-btn ${question.user_vote === 'downvote' ? 'active-down' : ''}`}
+                  className={`${styles.voteBtn} ${question.user_vote === 'downvote' ? styles.activeDown : ''}`}
                   onClick={() => toggleVote('downvote')}
                 >
                   ▼ {question.downvote_count}
@@ -427,68 +427,68 @@ export default function ViewSingleQuestionPage() {
           </div>
 
           {question.user_id === currentUserId && (
-            <div className="question-actions">
-              <button className="btn-edit" onClick={handleEdit}>Edit</button>
-              <button className="btn-delete" onClick={handleDelete}>Delete</button>
+            <div className={styles.questionActions}>
+              <button className={styles.btnEdit} onClick={handleEdit}>Edit</button>
+              <button className={styles.btnDelete} onClick={handleDelete}>Delete</button>
             </div>
           )}
 
-          <div className="question-card-body">
-            <h1 className="question-detail-title">{question.title}</h1>
-            <p className="question-detail-desc">{question.description}</p>
+          <div className={styles.questionCardBody}>
+            <h1 className={styles.questionDetailTitle}>{question.title}</h1>
+            <p className={styles.questionDetailDesc}>{question.description}</p>
           </div>
 
-          <div className="question-card-footer">
-            <div className="tags-row">
+          <div className={styles.questionCardFooter}>
+            <div className={styles.tagsRow}>
               {question.tags?.map(tag => (
-                <span key={tag.tag_id} className="tag-badge">{tag.tag_name}</span>
+                <span key={tag.tag_id} className={styles.tagBadge}>{tag.tag_name}</span>
               ))}
             </div>
           </div>
 
-          <div className='answers-section'>
-            <div className='heading-container'>
-              <h3 className="section-heading">Answers ({answers.length})</h3>
+          <div className={styles.answersSection}>
+            <div className={styles.headingContainer}>
+              <h3 className={styles.sectionHeading}>Answers ({answers.length})</h3>
             </div>
 
             {answers.length > 0 ? (
-              <ul className="answers-list">
+              <ul className={styles.answersList}>
                 {answers.map((a: Answers) => (
-                  <li key={a.answer_id} className="answer-item">
-                    <div className="answer-vote-col">
+                  <li key={a.answer_id} className={styles.answerItem}>
+                    <div className={styles.answerVoteCol}>
                       <button
-                        className={`answer-vote-btn ${a.user_vote === 'upvote' ? 'active-up' : ''}`}
+                        className={`${styles.answerVoteBtn} ${a.user_vote === 'upvote' ? styles.activeUp : ''}`}
                         onClick={() => toggleAnswerVote(a, 'upvote')}
                       >▲</button>
-                      <span className="answer-vote-count">{a.upvote_count}</span>
+                      <span className={styles.answerVoteCount}>{a.upvote_count}</span>
                       <button
-                        className={`answer-vote-btn ${a.user_vote === 'downvote' ? 'active-down' : ''}`}
+                        className={`${styles.answerVoteBtn} ${a.user_vote === 'downvote' ? styles.activeDown : ''}`}
                         onClick={() => toggleAnswerVote(a, 'downvote')}
                       >▼</button>
-                      <span className="answer-vote-count">{a.downvote_count}</span>
+                      <span className={styles.answerVoteCount}>{a.downvote_count}</span>
                     </div>
 
-                    <div className="answer-body">
+                    <div className={styles.answerBody}>
                       {editingAnswerId === a.answer_id ? (
                         <>
                           <textarea
-                            className="answer-textarea"
+                            className={styles.answerTextarea}
                             value={editContent}
                             onChange={e => setEditContent(e.target.value)}
                             rows={3}
                           />
-                          <div className="answer-edit-actions">
-                            <button className="btn-primary" style={{ padding: '6px 16px', fontSize: 13 }} onClick={() => handleEditAnswer(a.answer_id)}>Save</button>
-                            <button className="btn-secondary" style={{ padding: '6px 14px', fontSize: 13 }} onClick={() => setEditingAnswerId(null)}>Cancel</button>
+                          <div className={styles.answerEditActions}>
+                            <button className={styles.btnPrimary} style={{ padding: '6px 16px', fontSize: 13 }} onClick={() => handleEditAnswer(a.answer_id)}>Save</button>
+                            <button className={styles.btnSecondary} style={{ padding: '6px 14px', fontSize: 13 }} onClick={() => setEditingAnswerId(null)}>Cancel</button>
                           </div>
                         </>
                       ) : (
                         <>
-                          <p className="answer-content">{a.content}</p>
+                          <p className={styles.answerContent}>{a.content}</p>
                           {a.user_id === currentUserId && (
-                            <div className="answer-edit-actions">
-                              <button className="btn-edit" style={{ padding: '5px 14px', fontSize: 12 }} onClick={() => { setEditingAnswerId(a.answer_id); setEditContent(a.content) }}>Edit</button>
-                              <button className="btn-delete" style={{ padding: '5px 14px', fontSize: 12 }} onClick={() => handleDeleteAnswer(a.answer_id)}>Delete</button>
+                            <div className={styles.answerEditActions}>
+                              <button className={styles.btnEdit} style={{ padding: '5px 14px', fontSize: 12 }} onClick={() => { setEditingAnswerId(a.answer_id); setEditContent(a.content) }}>Edit</button>
+                              <button className={styles.btnDelete} style={{ padding: '5px 14px', fontSize: 12 }} onClick={() => handleDeleteAnswer(a.answer_id)}>Delete</button>
                             </div>
                           )}
                         </>
@@ -498,13 +498,13 @@ export default function ViewSingleQuestionPage() {
                 ))}
               </ul>
             ) : (
-              <p className="no-answers">No answers yet. Be the first to answer!</p>
+              <p className={styles.noAnswers}>No answers yet. Be the first to answer!</p>
             )}
 
-            <form className="add-answer-form" onSubmit={handleAddAnswer}>
-              <span className="add-answer-label">Your Answer</span>
+            <form className={styles.addAnswerForm} onSubmit={handleAddAnswer}>
+              <span className={styles.addAnswerLabel}>Your Answer</span>
               <textarea
-                className="answer-textarea"
+                className={styles.answerTextarea}
                 value={newAnswerContent}
                 onChange={e => setNewAnswerContent(e.target.value)}
                 placeholder="Write your answer here..."
@@ -512,7 +512,7 @@ export default function ViewSingleQuestionPage() {
                 style={{ marginBottom: 0 }}
               />
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <button type="submit" className="btn-primary">Post Answer</button>
+                <button type="submit" className={styles.btnPrimary}>Post Answer</button>
               </div>
             </form>
           </div>
