@@ -525,7 +525,7 @@ export default function Dashboard() {
                   <span className="user-name">{q.username}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span className="views-badge">👁 {q.views}</span>
+                  <span className="views-badge"><img src="../../public/view.png" width='30' alt="view" /> {q.views}</span>
                   <div className="vote-cluster">
                     <button
                       className={`vote-btn ${q.user_vote === 'upvote' ? 'active-up' : ''}`}

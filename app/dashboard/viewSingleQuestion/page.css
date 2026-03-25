@@ -306,7 +306,7 @@ body { background: var(--body-bg); font-family: var(--font-body); }
 }
 
 .question-card {
-  background: var(--card-bg);
+  background-color: white;
   border-radius: var(--border-radius);
   overflow: hidden;
   transition: box-shadow 0.2s, transform 0.15s;
