@@ -26,7 +26,7 @@ export function Sidebar(){
   return(
     <>
       <nav className="navbar">
-        <span className="navbar-brand">&lt;<span>DevTalk</span>/&gt;</span>
+        <span className="navbar-brand">&lt;<span> DevTalk </span> /&gt;</span>
 
         <div className="search-wrapper">
           <span className="search-icon">🔍</span>

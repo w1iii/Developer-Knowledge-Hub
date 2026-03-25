@@ -511,9 +511,11 @@ export default function Dashboard() {
       )}
 
       <main className="main-content">
-        <div className="page-header">
-          <h1 className="page-title">All Questions</h1>
-        </div>
+        {
+          // <div className="page-header">
+          //   <h1 className="page-title">All Questions</h1>
+          // </div>
+        }
 
         <div className="questions-list">
           {questions.map((q: Question) => (
@@ -525,7 +527,6 @@ export default function Dashboard() {
                   <span className="user-name">{q.username}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span className="views-badge"><img src="../../public/view.png" width='30' alt="view" /> {q.views}</span>
                   <div className="vote-cluster">
                     <button
                       className={`vote-btn ${q.user_vote === 'upvote' ? 'active-up' : ''}`}
@@ -554,7 +555,7 @@ export default function Dashboard() {
                     <span key={tag.tag_id} className="tag-badge">{tag.tag_name}</span>
                   ))}
                 </div>
-                <span className="answers-count">Answers: <strong>0</strong></span>
+                <span className="answers-count"><img src="/view.png" width='10' alt="view" /> {q.views} Answers: <strong>0</strong></span>
               </div>
 
               {

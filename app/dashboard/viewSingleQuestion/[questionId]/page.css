@@ -50,6 +50,8 @@ body { background: var(--body-bg); font-family: var(--font-body); }
 }
 .search-input {
   width: 100%;
+  margin: 0 auto;
+  display: block;
   background: rgba(255,255,255,0.10);
   border: 1px solid rgba(255,255,255,0.15);
   border-radius: 8px;

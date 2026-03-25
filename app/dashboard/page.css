@@ -34,11 +34,13 @@ body { background: var(--body-bg); font-family: var(--font-body); }
 
 .navbar-brand {
   font-family: var(--font-title);
+  font-style: italic;
   font-size: 22px;
   color: #fff;
   letter-spacing: -0.5px;
   white-space: nowrap;
   text-decoration: none;
+  margin-right:2rem;
 }
 .navbar-brand span { color: #7EC8A0; }
 
@@ -49,6 +51,8 @@ body { background: var(--body-bg); font-family: var(--font-body); }
 }
 .search-input {
   width: 100%;
+  margin: 0 auto;
+  display: block;
   background: rgba(255,255,255,0.10);
   border: 1px solid rgba(255,255,255,0.15);
   border-radius: 8px;
@@ -326,6 +330,12 @@ body { background: var(--body-bg); font-family: var(--font-body); }
   padding: 14px 20px 10px;
 }
 
+.view-badge-container{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .user-pill {
   display: flex; align-items: center; gap: 9px;
 }
@@ -370,10 +380,12 @@ body { background: var(--body-bg); font-family: var(--font-body); }
 .vote-btn.active-down { background: var(--vote-active-down); }
 
 .views-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-family: var(--font-body);
   font-size: 12px;
   color: var(--text-muted);
-  margin-left: 6px;
 }
 
 .question-card-body {

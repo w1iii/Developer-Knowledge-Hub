@@ -18,16 +18,26 @@ export async function POST(request: NextRequest) {
     const { question_id } = body
 
     try{
-        const incrementQuery = `
-            UPDATE 
-            questions 
-            SET 
-            views = views + 1 
-            WHERE 
-            question_id = $1
-            RETURNING views
+        const trackViewQuery = `
+            INSERT INTO question_views (question_id, user_id)
+            VALUES ($1, $2)
+            ON CONFLICT (question_id, user_id) DO NOTHING
+            RETURNING view_id
         `;
-        await pool.query(incrementQuery, [question_id]);
+        const trackResult = await pool.query(trackViewQuery, [question_id, user_id]);
+
+        if (trackResult.rows.length > 0) {
+            const incrementQuery = `
+                UPDATE 
+                questions 
+                SET 
+                views = views + 1 
+                WHERE 
+                question_id = $1
+                RETURNING views
+            `;
+            await pool.query(incrementQuery, [question_id]);
+        }
 
         const query = `
             SELECT 
@@ -72,7 +82,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
             { message: 'Server Error', error: e instanceof Error ? e.message : 'Unknown error' }, 
             { status: 500 }
-       );
+        );
     }
 
 }
