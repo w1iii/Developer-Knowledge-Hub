@@ -455,18 +455,6 @@ export default function ViewSingleQuestionPage() {
               <ul className={styles.answersList}>
                 {answers.map((a: Answers) => (
                   <li key={a.answer_id} className={styles.answerItem}>
-                    <div className={styles.answerVoteCol}>
-                      <button
-                        className={`${styles.answerVoteBtn} ${a.user_vote === 'upvote' ? styles.activeUp : ''}`}
-                        onClick={() => toggleAnswerVote(a, 'upvote')}
-                      >▲</button>
-                      <span className={styles.answerVoteCount}>{a.upvote_count}</span>
-                      <button
-                        className={`${styles.answerVoteBtn} ${a.user_vote === 'downvote' ? styles.activeDown : ''}`}
-                        onClick={() => toggleAnswerVote(a, 'downvote')}
-                      >▼</button>
-                      <span className={styles.answerVoteCount}>{a.downvote_count}</span>
-                    </div>
 
                     <div className={styles.answerBody}>
                       {editingAnswerId === a.answer_id ? (
@@ -491,8 +479,21 @@ export default function ViewSingleQuestionPage() {
                               <button className={styles.btnDelete} style={{ padding: '5px 14px', fontSize: 12 }} onClick={() => handleDeleteAnswer(a.answer_id)}>Delete</button>
                             </div>
                           )}
+
                         </>
                       )}
+                    </div>
+                    <div className={styles.answerVoteCol}>
+                      <button
+                        className={`${styles.answerVoteBtn} ${a.user_vote === 'upvote' ? styles.activeUp : ''}`}
+                        onClick={() => toggleAnswerVote(a, 'upvote')}
+                      >▲</button>
+                      <span className={styles.answerVoteCount}>{a.upvote_count}</span>
+                      <button
+                        className={`${styles.answerVoteBtn} ${a.user_vote === 'downvote' ? styles.activeDown : ''}`}
+                        onClick={() => toggleAnswerVote(a, 'downvote')}
+                      >▼</button>
+                      <span className={styles.answerVoteCount}>{a.downvote_count}</span>
                     </div>
                   </li>
                 ))}
