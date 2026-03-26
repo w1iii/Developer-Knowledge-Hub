@@ -218,6 +218,11 @@
   align-items: flex-start;
 }
 
+.itemwrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 .answerVoteCol {
   display: flex;
   flex-direction: column;

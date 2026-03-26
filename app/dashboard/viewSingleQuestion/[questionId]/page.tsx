@@ -30,6 +30,7 @@ type VoteType = 'upvote' | 'downvote';
 interface Answers {
   answer_id: number
   user_id: number
+  username: string
   content: string
   upvote_count: number
   downvote_count: number
@@ -455,34 +456,35 @@ export default function ViewSingleQuestionPage() {
               <ul className={styles.answersList}>
                 {answers.map((a: Answers) => (
                   <li key={a.answer_id} className={styles.answerItem}>
-
-                    <div className={styles.answerBody}>
-                      {editingAnswerId === a.answer_id ? (
-                        <>
-                          <textarea
-                            className={styles.answerTextarea}
-                            value={editContent}
-                            onChange={e => setEditContent(e.target.value)}
-                            rows={3}
-                          />
-                          <div className={styles.answerEditActions}>
-                            <button className={styles.btnPrimary} style={{ padding: '6px 16px', fontSize: 13 }} onClick={() => handleEditAnswer(a.answer_id)}>Save</button>
-                            <button className={styles.btnSecondary} style={{ padding: '6px 14px', fontSize: 13 }} onClick={() => setEditingAnswerId(null)}>Cancel</button>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <p className={styles.answerContent}>{a.content}</p>
-                          {a.user_id === currentUserId && (
+                    <div className={styles.itemwrapper} />
+                      <p> {a.username} </p>
+                      <div className={styles.answerBody}>
+                        {editingAnswerId === a.answer_id ? (
+                          <>
+                            <textarea
+                              className={styles.answerTextarea}
+                              value={editContent}
+                              onChange={e => setEditContent(e.target.value)}
+                              rows={3}
+                            />
                             <div className={styles.answerEditActions}>
-                              <button className={styles.btnEdit} style={{ padding: '5px 14px', fontSize: 12 }} onClick={() => { setEditingAnswerId(a.answer_id); setEditContent(a.content) }}>Edit</button>
-                              <button className={styles.btnDelete} style={{ padding: '5px 14px', fontSize: 12 }} onClick={() => handleDeleteAnswer(a.answer_id)}>Delete</button>
+                              <button className={styles.btnPrimary} style={{ padding: '6px 16px', fontSize: 13 }} onClick={() => handleEditAnswer(a.answer_id)}>Save</button>
+                              <button className={styles.btnSecondary} style={{ padding: '6px 14px', fontSize: 13 }} onClick={() => setEditingAnswerId(null)}>Cancel</button>
                             </div>
-                          )}
+                          </>
+                        ) : (
+                          <>
+                            <p className={styles.answerContent}>{a.content}</p>
+                            {a.user_id === currentUserId && (
+                              <div className={styles.answerEditActions}>
+                                <button className={styles.btnEdit} style={{ padding: '5px 14px', fontSize: 12 }} onClick={() => { setEditingAnswerId(a.answer_id); setEditContent(a.content) }}>Edit</button>
+                                <button className={styles.btnDelete} style={{ padding: '5px 14px', fontSize: 12 }} onClick={() => handleDeleteAnswer(a.answer_id)}>Delete</button>
+                              </div>
+                            )}
 
-                        </>
-                      )}
-                    </div>
+                          </>
+                        )}
+                      </div>
                     <div className={styles.answerVoteCol}>
                       <button
                         className={`${styles.answerVoteBtn} ${a.user_vote === 'upvote' ? styles.activeUp : ''}`}

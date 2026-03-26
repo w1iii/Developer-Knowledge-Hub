@@ -23,7 +23,8 @@ export async function POST(request: NextRequest) {
         const selectQuery = `
             SELECT 
                 a.answer_id, 
-                a.user_id, 
+                a.user_id,
+                u.username,
                 a.content, 
                 a.upvote_count,
                 a.downvote_count,
@@ -33,6 +34,8 @@ export async function POST(request: NextRequest) {
                     NULL
                 ) as user_vote
             FROM answers a 
+            LEFT JOIN users u
+                ON a.user_id = u.user_id
             WHERE a.question_id = $2
         `
         const result = await pool.query(selectQuery, [user_id, question_id])
