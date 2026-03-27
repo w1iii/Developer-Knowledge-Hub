@@ -1,4 +1,4 @@
--- Create question_views table to track unique views
+-- Question Views Table Schema
 CREATE TABLE IF NOT EXISTS question_views (
     view_id SERIAL PRIMARY KEY,
     question_id INTEGER NOT NULL REFERENCES questions(question_id) ON DELETE CASCADE,
@@ -7,5 +7,4 @@ CREATE TABLE IF NOT EXISTS question_views (
     UNIQUE(question_id, user_id)
 );
 
--- Index for faster lookups
 CREATE INDEX IF NOT EXISTS idx_question_views_lookup ON question_views(question_id, user_id);
